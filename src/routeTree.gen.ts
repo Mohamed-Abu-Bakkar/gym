@@ -16,11 +16,14 @@ import { Route as DemoMcpTodosRouteImport } from './routes/demo/mcp-todos'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as DemoConvexRouteImport } from './routes/demo/convex'
 import { Route as DemoBetterAuthRouteImport } from './routes/demo/better-auth'
+import { Route as AppManagementIndexRouteImport } from './routes/app/management/index'
+import { Route as AppUserIndexRouteImport } from './routes/app/_user/index'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiTqTodosRouteImport } from './routes/demo/api.tq-todos'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
 import { Route as DemoApiMcpTodosRouteImport } from './routes/demo/api.mcp-todos'
+import { Route as AppComponentsBottomBarAdminRouteImport } from './routes/app/components/bottom-bar-admin'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
@@ -62,6 +65,16 @@ const DemoBetterAuthRoute = DemoBetterAuthRouteImport.update({
   path: '/demo/better-auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppManagementIndexRoute = AppManagementIndexRouteImport.update({
+  id: '/app/management/',
+  path: '/app/management/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppUserIndexRoute = AppUserIndexRouteImport.update({
+  id: '/app/_user/',
+  path: '/app/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
   id: '/demo/start/server-funcs',
   path: '/demo/start/server-funcs',
@@ -87,6 +100,12 @@ const DemoApiMcpTodosRoute = DemoApiMcpTodosRouteImport.update({
   path: '/demo/api/mcp-todos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppComponentsBottomBarAdminRoute =
+  AppComponentsBottomBarAdminRouteImport.update({
+    id: '/app/components/bottom-bar-admin',
+    path: '/app/components/bottom-bar-admin',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -122,11 +141,14 @@ export interface FileRoutesByFullPath {
   '/demo/mcp-todos': typeof DemoMcpTodosRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/app/components/bottom-bar-admin': typeof AppComponentsBottomBarAdminRoute
   '/demo/api/mcp-todos': typeof DemoApiMcpTodosRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/app': typeof AppUserIndexRoute
+  '/app/management': typeof AppManagementIndexRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -141,11 +163,14 @@ export interface FileRoutesByTo {
   '/demo/mcp-todos': typeof DemoMcpTodosRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/app/components/bottom-bar-admin': typeof AppComponentsBottomBarAdminRoute
   '/demo/api/mcp-todos': typeof DemoApiMcpTodosRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/app': typeof AppUserIndexRoute
+  '/app/management': typeof AppManagementIndexRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -161,11 +186,14 @@ export interface FileRoutesById {
   '/demo/mcp-todos': typeof DemoMcpTodosRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/app/components/bottom-bar-admin': typeof AppComponentsBottomBarAdminRoute
   '/demo/api/mcp-todos': typeof DemoApiMcpTodosRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/app/_user/': typeof AppUserIndexRoute
+  '/app/management/': typeof AppManagementIndexRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -182,11 +210,14 @@ export interface FileRouteTypes {
     | '/demo/mcp-todos'
     | '/demo/tanstack-query'
     | '/api/auth/$'
+    | '/app/components/bottom-bar-admin'
     | '/demo/api/mcp-todos'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app'
+    | '/app/management'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -201,11 +232,14 @@ export interface FileRouteTypes {
     | '/demo/mcp-todos'
     | '/demo/tanstack-query'
     | '/api/auth/$'
+    | '/app/components/bottom-bar-admin'
     | '/demo/api/mcp-todos'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app'
+    | '/app/management'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -220,11 +254,14 @@ export interface FileRouteTypes {
     | '/demo/mcp-todos'
     | '/demo/tanstack-query'
     | '/api/auth/$'
+    | '/app/components/bottom-bar-admin'
     | '/demo/api/mcp-todos'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app/_user/'
+    | '/app/management/'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -240,11 +277,14 @@ export interface RootRouteChildren {
   DemoMcpTodosRoute: typeof DemoMcpTodosRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  AppComponentsBottomBarAdminRoute: typeof AppComponentsBottomBarAdminRoute
   DemoApiMcpTodosRoute: typeof DemoApiMcpTodosRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoApiTqTodosRoute: typeof DemoApiTqTodosRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
+  AppUserIndexRoute: typeof AppUserIndexRoute
+  AppManagementIndexRoute: typeof AppManagementIndexRoute
   DemoStartSsrDataOnlyRoute: typeof DemoStartSsrDataOnlyRoute
   DemoStartSsrFullSsrRoute: typeof DemoStartSsrFullSsrRoute
   DemoStartSsrSpaModeRoute: typeof DemoStartSsrSpaModeRoute
@@ -302,6 +342,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoBetterAuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/management/': {
+      id: '/app/management/'
+      path: '/app/management'
+      fullPath: '/app/management'
+      preLoaderRoute: typeof AppManagementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/_user/': {
+      id: '/app/_user/'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppUserIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo/start/server-funcs': {
       id: '/demo/start/server-funcs'
       path: '/demo/start/server-funcs'
@@ -335,6 +389,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/api/mcp-todos'
       fullPath: '/demo/api/mcp-todos'
       preLoaderRoute: typeof DemoApiMcpTodosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/components/bottom-bar-admin': {
+      id: '/app/components/bottom-bar-admin'
+      path: '/app/components/bottom-bar-admin'
+      fullPath: '/app/components/bottom-bar-admin'
+      preLoaderRoute: typeof AppComponentsBottomBarAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -384,11 +445,14 @@ const rootRouteChildren: RootRouteChildren = {
   DemoMcpTodosRoute: DemoMcpTodosRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  AppComponentsBottomBarAdminRoute: AppComponentsBottomBarAdminRoute,
   DemoApiMcpTodosRoute: DemoApiMcpTodosRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoApiTqTodosRoute: DemoApiTqTodosRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
+  AppUserIndexRoute: AppUserIndexRoute,
+  AppManagementIndexRoute: AppManagementIndexRoute,
   DemoStartSsrDataOnlyRoute: DemoStartSsrDataOnlyRoute,
   DemoStartSsrFullSsrRoute: DemoStartSsrFullSsrRoute,
   DemoStartSsrSpaModeRoute: DemoStartSsrSpaModeRoute,
