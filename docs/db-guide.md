@@ -1,0 +1,65 @@
+user
+- id
+- name
+- phone-number(unique)
+- email(optional)
+- pin (6 digit number) (no hash)
+- role (trainer | trainerManagedCustomer | selfManagedCustomer | admin)
+- trainer id (ref: user.id, null if role is trainer or admin)(many to one[trainer to many trainerManagedCustomers])
+- training plan id (ref: training plan.id, null if role is trainer or admin)
+- user-meta (as separate table)
+  - age
+  - address
+  - gender
+  - height
+	- emergency contact name
+	- emergency contact phone number
+	- ...other relevant personal details
+- workout logs (as separate table)(one to many)
+  - id
+  - start time
+  - end time(null if ongoing)
+  - status (ongoing, completed, cancelled)
+  - workout type (cardio, strength, flexibility, balance)
+  - duration
+  - calories burned
+- diet logs (as separate table)(one to many)
+  - created at
+  - meal type(breakfast, lunch, dinner, snack)
+  - description
+  - calories
+- weight logs (as separate table)(one to many)
+  - created at
+  - weight
+- timestamp(created at, updated at)
+
+- workout
+  - id(ref: user.workout logs.id)
+  - exercises[]
+    - created at
+    - exercise name
+    - sets
+    - reps
+    - weight
+    - notes
+  - timestamp(created at, updated at)
+
+training plan
+- id
+- name
+- description
+- day(mon, tue, wed, thu, fri, sat, sun)[could be empty if rest day]
+  - exercises[]
+    - exercise name
+    - sets
+    - reps
+    - weight
+    - notes
+- duration (in weeks)
+- created by (ref: user.id)
+- timestamp(created at, updated at)
+
+consts (predefined list)
+- exercise names 
+- meal types
+- workout types
