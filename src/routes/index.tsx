@@ -7,8 +7,7 @@ function App() {
 
   return (
     <div>
-      <h1>Welcome to the Home Page!</h1>
-      <p>Select a section to explore:</p>
+      <div>Master App landing page</div>
     </div>
   )
 }

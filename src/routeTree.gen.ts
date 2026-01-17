@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppManagementIndexRouteImport } from './routes/app/management/index'
 import { Route as AppUserIndexRouteImport } from './routes/app/_user/index'
-import { Route as AppComponentsBottomBarAdminRouteImport } from './routes/app/_components/bottom-bar-admin'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,48 +28,33 @@ const AppUserIndexRoute = AppUserIndexRouteImport.update({
   path: '/app/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppComponentsBottomBarAdminRoute =
-  AppComponentsBottomBarAdminRouteImport.update({
-    id: '/app/_components/bottom-bar-admin',
-    path: '/app/bottom-bar-admin',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/app/bottom-bar-admin': typeof AppComponentsBottomBarAdminRoute
   '/app': typeof AppUserIndexRoute
   '/app/management': typeof AppManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/app/bottom-bar-admin': typeof AppComponentsBottomBarAdminRoute
   '/app': typeof AppUserIndexRoute
   '/app/management': typeof AppManagementIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/app/_components/bottom-bar-admin': typeof AppComponentsBottomBarAdminRoute
   '/app/_user/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app/bottom-bar-admin' | '/app' | '/app/management'
+  fullPaths: '/' | '/app' | '/app/management'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app/bottom-bar-admin' | '/app' | '/app/management'
-  id:
-    | '__root__'
-    | '/'
-    | '/app/_components/bottom-bar-admin'
-    | '/app/_user/'
-    | '/app/management/'
+  to: '/' | '/app' | '/app/management'
+  id: '__root__' | '/' | '/app/_user/' | '/app/management/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppComponentsBottomBarAdminRoute: typeof AppComponentsBottomBarAdminRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
   AppManagementIndexRoute: typeof AppManagementIndexRoute
 }
@@ -98,19 +82,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/_components/bottom-bar-admin': {
-      id: '/app/_components/bottom-bar-admin'
-      path: '/app/bottom-bar-admin'
-      fullPath: '/app/bottom-bar-admin'
-      preLoaderRoute: typeof AppComponentsBottomBarAdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppComponentsBottomBarAdminRoute: AppComponentsBottomBarAdminRoute,
   AppUserIndexRoute: AppUserIndexRoute,
   AppManagementIndexRoute: AppManagementIndexRoute,
 }
