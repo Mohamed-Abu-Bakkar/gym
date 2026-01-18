@@ -70,6 +70,7 @@ const users = defineTable({
   updatedAt: v.number(),
 })
   .index('by_phone', ['phoneNumber'])
+  .index('by_phone_pin', ['phoneNumber', 'pin'])
   .index('by_trainer', ['trainerId'])
   .index('by_training_plan', ['trainingPlanId'])
 

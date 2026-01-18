@@ -8,9 +8,11 @@ export const signInQuery = query(
             console.log(`Attempting sign-in for phone number: ${args.phoneNumber} with PIN: ${args.pin}`);
             const user = await ctx.db
                 .query('users')
-                .withIndex('by_phone', (q) => q.eq('phoneNumber', args.phoneNumber))
-                .filter((q) => q.eq('pin', args.pin))
-                .unique()
+                .withIndex('by_phone_pin', q =>
+                    q.eq('phoneNumber', args.phoneNumber)
+                        .eq('pin', args.pin)
+                )
+                .unique();
             console.log('Sign-in result:', user);
             return user;
         }

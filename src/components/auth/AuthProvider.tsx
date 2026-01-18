@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
-import { useQuery } from 'convex/react'
+import { useConvex } from 'convex/react'
 import { api } from 'convex/_generated/api'
 import { Doc } from 'convex/_generated/dataModel'
 import { env } from '@/env'
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userSession, setUserSession] = useState<Doc<'users'> | null>(null)
-  const signIn = (phoneNumber: string, pin: string) => {
-    const user = useQuery(api.users.signInQuery, { phoneNumber, pin })
+  const convex = useConvex()
+
+  const signIn = async (phoneNumber: string, pin: string) => {
+    const user = await convex.query(api.users.signInQuery, { phoneNumber, pin })
     if (user) {
       setUserSession(user)
       localStorage.setItem(
@@ -29,15 +31,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    const initSession = async () => {
       const storedSession = localStorage.getItem('session')
       if (storedSession) {
-				const { user, expiresAt } = JSON.parse(storedSession);
-				if (Date.now() > expiresAt) {
-					localStorage.removeItem('session');
-				}	
-				signIn(user.phoneNumber, user.pin);
+        const { user, expiresAt } = JSON.parse(storedSession)
+        if (Date.now() > expiresAt) {
+          localStorage.removeItem('session')
+        } else {
+          await signIn(user.phoneNumber, user.pin)
+        }
       }
       setIsLoading(false)
+    }
+    initSession()
   }, [])
 
   return (
