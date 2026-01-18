@@ -5,12 +5,13 @@ export const signInQuery = query(
     {
         args: { phoneNumber: v.string(), pin: v.string() },
         handler: async (ctx, args) => {
+            console.log(`Attempting sign-in for phone number: ${args.phoneNumber} with PIN: ${args.pin}`);
             const user = await ctx.db
                 .query('users')
                 .withIndex('by_phone', (q) => q.eq('phoneNumber', args.phoneNumber))
                 .filter((q) => q.eq('pin', args.pin))
                 .unique()
-
+            console.log('Sign-in result:', user);
             return user;
         }
     }
