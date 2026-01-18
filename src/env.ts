@@ -14,7 +14,8 @@ export const env = createEnv({
 
   client: {
     VITE_APP_TITLE: z.string().min(1).optional(),
-    VITE_CONVEX_URL: z.string().url(),
+    VITE_CONVEX_URL: z.url(),
+    VITE_AUTH_EXPIRY_TIME: z.string().default((30*24*60*60*1000).toString()), // 30 days in milliseconds
   },
 
   /**

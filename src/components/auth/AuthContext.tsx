@@ -1,14 +1,10 @@
+import { Doc } from 'convex/_generated/dataModel'
 import { createContext } from 'react'
 
-export interface Session {
-  id: string | null
-  name: string | null
-  phoneNumber: string | null
-  token: string | null
-}
+
 
 export interface AuthContextType {
-  session: Session
+  user: Doc<'users'> | null
   isLoading: boolean
   signIn: (phoneNumber: string, pin: string) => void
   signOut: () => void

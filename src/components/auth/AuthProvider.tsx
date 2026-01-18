@@ -1,53 +1,49 @@
 import { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
-import type { Session } from './AuthContext';
+import { useQuery } from 'convex/react'
+import { api } from 'convex/_generated/api'
+import { Doc } from 'convex/_generated/dataModel'
+import { env } from '@/env'
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<Session>({
-    id: null,
-    name: null,
-    phoneNumber: null,
-    token: null,
-  })
+  const [userSession, setUserSession] = useState<Doc<'users'> | null>(null)
   const signIn = (phoneNumber: string, pin: string) => {
-    if (pin !== '123456') {
-      throw new Error('Invalid PIN')
+    const user = useQuery(api.users.signInQuery, { phoneNumber, pin })
+    if (user) {
+      setUserSession(user)
+      localStorage.setItem(
+        'session',
+        JSON.stringify({
+          user,
+          expiresAt: Date.now() + parseInt(env.VITE_AUTH_EXPIRY_TIME),
+        }),
+      )
     }
-    // ! TODO: Implement sign in logic
-    setSession({
-      id: 'user-id',
-      name: 'User Name',
-      phoneNumber,
-      token: 'auth-token',
-    })
   }
 
   const signOut = () => {
-    // ! sign out logic
-    setSession({
-      id: null,
-      name: null,
-      phoneNumber: null,
-      token: null,
-    })
+    setUserSession(null)
     localStorage.removeItem('session')
   }
 
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // ! Simulate loading user session from storage or API
-    setTimeout(() => {
       const storedSession = localStorage.getItem('session')
       if (storedSession) {
-        setSession(JSON.parse(storedSession))
+				const { user, expiresAt } = JSON.parse(storedSession);
+				if (Date.now() > expiresAt) {
+					localStorage.removeItem('session');
+				}	
+				signIn(user.phoneNumber, user.pin);
       }
       setIsLoading(false)
-    }, 1000)
   }, [])
 
   return (
-    <AuthContext.Provider value={{ session, isLoading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user: userSession, isLoading, signIn, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   )

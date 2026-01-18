@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiIndexRouteImport } from './routes/api/index'
 import { Route as AppManagementRouteRouteImport } from './routes/app/management/route'
 import { Route as AppManagementIndexRouteImport } from './routes/app/management/index'
 import { Route as AppUserIndexRouteImport } from './routes/app/_user/index'
@@ -17,6 +18,11 @@ import { Route as AppUserIndexRouteImport } from './routes/app/_user/index'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiIndexRoute = ApiIndexRouteImport.update({
+  id: '/api/',
+  path: '/api/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppManagementRouteRoute = AppManagementRouteRouteImport.update({
@@ -38,11 +44,13 @@ const AppUserIndexRoute = AppUserIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app/management': typeof AppManagementRouteRouteWithChildren
+  '/api': typeof ApiIndexRoute
   '/app': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api': typeof ApiIndexRoute
   '/app': typeof AppUserIndexRoute
   '/app/management': typeof AppManagementIndexRoute
 }
@@ -50,20 +58,28 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app/management': typeof AppManagementRouteRouteWithChildren
+  '/api/': typeof ApiIndexRoute
   '/app/_user/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app/management' | '/app' | '/app/management/'
+  fullPaths: '/' | '/app/management' | '/api' | '/app' | '/app/management/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app' | '/app/management'
-  id: '__root__' | '/' | '/app/management' | '/app/_user/' | '/app/management/'
+  to: '/' | '/api' | '/app' | '/app/management'
+  id:
+    | '__root__'
+    | '/'
+    | '/app/management'
+    | '/api/'
+    | '/app/_user/'
+    | '/app/management/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppManagementRouteRoute: typeof AppManagementRouteRouteWithChildren
+  ApiIndexRoute: typeof ApiIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
 }
 
@@ -74,6 +90,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/': {
+      id: '/api/'
+      path: '/api'
+      fullPath: '/api'
+      preLoaderRoute: typeof ApiIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/management': {
@@ -114,6 +137,7 @@ const AppManagementRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppManagementRouteRoute: AppManagementRouteRouteWithChildren,
+  ApiIndexRoute: ApiIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
 }
 export const routeTree = rootRouteImport
