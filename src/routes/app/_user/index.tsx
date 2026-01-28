@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Activity, Clock, Flame, TrendingUp } from 'lucide-react'
+import { Activity, Clock, TrendingUp, Flame } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { MOCK_WORKOUT_LOGS, TODAY_STATS } from '@/lib/mock-data'
+import { TODAY_STATS, MOCK_WORKOUT_LOGS } from '@/lib/mock-data'
 
 export const Route = createFileRoute('/app/_user/')({
   component: RouteComponent,
@@ -24,7 +24,7 @@ function RouteComponent() {
       </div>
 
       {/* Today's Stats - Concentric Circles */}
-      <Card className="ui-animate-in">
+      <Card>
         <CardHeader>
           <CardTitle>Today's Progress</CardTitle>
         </CardHeader>
@@ -159,7 +159,7 @@ function RouteComponent() {
       </Card>
 
       {/* Weekly Summary */}
-      <Card className="ui-animate-in" style={{ animationDelay: '60ms' }}>
+      <Card>
         <CardHeader>
           <CardTitle>Weekly Summary</CardTitle>
         </CardHeader>
@@ -231,7 +231,7 @@ function RouteComponent() {
       </Card>
 
       {/* Quick Access */}
-      <Card className="ui-animate-in" style={{ animationDelay: '120ms' }}>
+      <Card>
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
@@ -244,7 +244,7 @@ function RouteComponent() {
       </Card>
 
       {/* Recent Activity */}
-      <Card className="ui-animate-in" style={{ animationDelay: '180ms' }}>
+      <Card>
         <CardHeader>
           <CardTitle>Recent Activity</CardTitle>
         </CardHeader>

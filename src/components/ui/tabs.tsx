@@ -117,7 +117,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
         ref={ref}
         role="tabpanel"
         className={cn(
-          'ui-animate-in mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           className,
         )}
         {...props}
