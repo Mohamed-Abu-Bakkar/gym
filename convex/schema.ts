@@ -83,6 +83,10 @@ const userMeta = defineTable({
   address: v.optional(v.string()),
   gender: v.optional(v.string()),
   height: v.optional(v.number()),
+  focusArea: v.optional(v.string()),
+  readinessNote: v.optional(v.string()),
+  progressPercent: v.optional(v.number()),
+  accentColor: v.optional(v.string()),
 
   emergencyContactName: v.optional(v.string()),
   emergencyContactPhone: v.optional(v.string()),
@@ -183,6 +187,77 @@ const exerciseNames = defineTable({
   name: v.string(),
 }).index('by_name', ['name'])
 
+/* -------------------- TRAINER METRICS -------------------- */
+
+const trainerMetrics = defineTable({
+  trainerId: v.id('users'),
+  overallProgress: v.number(),
+  trendDelta: v.number(),
+  clientsTotal: v.number(),
+  microStats: v.array(
+    v.object({
+      label: v.string(),
+      value: v.string(),
+      helper: v.string(),
+    }),
+  ),
+  quickActions: v.array(
+    v.object({
+      label: v.string(),
+      description: v.string(),
+      iconKey: v.string(),
+    }),
+  ),
+  upcomingSessions: v.array(
+    v.object({
+      name: v.string(),
+      time: v.string(),
+      status: v.string(),
+    }),
+  ),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+}).index('by_trainer', ['trainerId'])
+
+/* -------------------- CLIENT METRICS -------------------- */
+
+const clientMetrics = defineTable({
+  userId: v.id('users'),
+  planName: v.string(),
+  goalProgress: v.number(),
+  goalQuote: v.string(),
+  caloriesRemaining: v.number(),
+  macros: v.array(
+    v.object({
+      label: v.string(),
+      amount: v.string(),
+      remaining: v.string(),
+      accentFrom: v.string(),
+      accentTo: v.string(),
+    }),
+  ),
+  activitySeries: v.array(
+    v.object({
+      day: v.string(),
+      minutes: v.number(),
+    }),
+  ),
+  durationMinutes: v.number(),
+  caloriesBurned: v.number(),
+  habits: v.array(
+    v.object({
+      label: v.string(),
+      value: v.string(),
+      helper: v.string(),
+      iconKey: v.string(),
+      accentColor: v.string(),
+    }),
+  ),
+  sunlightMinutes: v.number(),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+}).index('by_user', ['userId'])
+
 /* ======================================================
    SCHEMA EXPORT
 ====================================================== */
@@ -196,4 +271,6 @@ export default defineSchema({
   weightLogs,
   trainingPlans,
   exerciseNames,
+  trainerMetrics,
+  clientMetrics,
 })

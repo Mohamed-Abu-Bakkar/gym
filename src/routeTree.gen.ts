@@ -68,12 +68,12 @@ const AppUserAboutRoute = AppUserAboutRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app/management': typeof AppManagementRouteRouteWithChildren
-  '/api': typeof ApiIndexRoute
+  '/api/': typeof ApiIndexRoute
   '/app/about': typeof AppUserAboutRoute
   '/app/dashboard': typeof AppUserDashboardRoute
   '/app/diet-logs': typeof AppUserDietLogsRoute
   '/app/sessions': typeof AppUserSessionsRoute
-  '/app': typeof AppUserIndexRoute
+  '/app/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
 }
 export interface FileRoutesByTo {
@@ -103,12 +103,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app/management'
-    | '/api'
+    | '/api/'
     | '/app/about'
     | '/app/dashboard'
     | '/app/diet-logs'
     | '/app/sessions'
-    | '/app'
+    | '/app/'
     | '/app/management/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -156,7 +156,7 @@ declare module '@tanstack/react-router' {
     '/api/': {
       id: '/api/'
       path: '/api'
-      fullPath: '/api'
+      fullPath: '/api/'
       preLoaderRoute: typeof ApiIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -177,7 +177,7 @@ declare module '@tanstack/react-router' {
     '/app/_user/': {
       id: '/app/_user/'
       path: '/app'
-      fullPath: '/app'
+      fullPath: '/app/'
       preLoaderRoute: typeof AppUserIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
