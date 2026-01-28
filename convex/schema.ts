@@ -83,6 +83,10 @@ const userMeta = defineTable({
   address: v.optional(v.string()),
   gender: v.optional(v.string()),
   height: v.optional(v.number()),
+  focusArea: v.optional(v.string()),
+  progressPercent: v.optional(v.number()),
+  readinessNote: v.optional(v.string()),
+  accentColor: v.optional(v.string()),
 
   emergencyContactName: v.optional(v.string()),
   emergencyContactPhone: v.optional(v.string()),
