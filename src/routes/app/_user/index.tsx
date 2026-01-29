@@ -2,7 +2,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Activity, Clock, TrendingUp, Flame } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { TODAY_STATS, MOCK_WORKOUT_LOGS } from '@/lib/mock-data'
+import { MOCK_WORKOUT_LOGS } from '@/lib/mock-data'
+import { ChartRadialLabel } from '@/components/charts/chart-radial-label'
+import { TodayProgressChart } from '@/components/charts/today-progress-chart'
 
 export const Route = createFileRoute('/app/_user/')({
   component: RouteComponent,
@@ -23,142 +25,11 @@ function RouteComponent() {
         </p>
       </div>
 
-      {/* Today's Stats - Concentric Circles */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Today's Progress</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center gap-8">
-            {/* Concentric Circles */}
-            <div className="relative w-48 h-48">
-              {/* Outer circle - Calories */}
-              <svg className="w-48 h-48 -rotate-90 absolute inset-0">
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="88"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  className="text-muted"
-                />
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="88"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${2 * Math.PI * 88}`}
-                  strokeDashoffset={`${2 * Math.PI * 88 * (1 - TODAY_STATS.goals.calories.current / TODAY_STATS.goals.calories.target)}`}
-                  className="text-chart-1 transition-all duration-500"
-                  strokeLinecap="round"
-                />
-              </svg>
-
-              {/* Middle circle - Workout Time */}
-              <svg className="w-36 h-36 -rotate-90 absolute inset-0 m-auto">
-                <circle
-                  cx="72"
-                  cy="72"
-                  r="64"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  className="text-muted"
-                />
-                <circle
-                  cx="72"
-                  cy="72"
-                  r="64"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${2 * Math.PI * 64}`}
-                  strokeDashoffset={`${2 * Math.PI * 64 * (1 - TODAY_STATS.goals.workoutTime.current / TODAY_STATS.goals.workoutTime.target)}`}
-                  className="text-chart-2 transition-all duration-500"
-                  strokeLinecap="round"
-                />
-              </svg>
-
-              {/* Inner circle - Steps */}
-              <svg className="w-24 h-24 -rotate-90 absolute inset-0 m-auto">
-                <circle
-                  cx="48"
-                  cy="48"
-                  r="40"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  className="text-muted"
-                />
-                <circle
-                  cx="48"
-                  cy="48"
-                  r="40"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${2 * Math.PI * 40}`}
-                  strokeDashoffset={`${2 * Math.PI * 40 * (1 - TODAY_STATS.goals.steps.current / TODAY_STATS.goals.steps.target)}`}
-                  className="text-chart-4 transition-all duration-500"
-                  strokeLinecap="round"
-                />
-              </svg>
-
-              {/* Center Text */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-3xl font-bold">
-                  {Math.round(
-                    (TODAY_STATS.goals.calories.current /
-                      TODAY_STATS.goals.calories.target) *
-                      100,
-                  )}
-                  %
-                </div>
-                <div className="text-xs text-muted-foreground">Complete</div>
-              </div>
-            </div>
-
-            {/* Legends */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-chart-1" />
-                <div>
-                  <div className="text-sm font-medium">Calories</div>
-                  <div className="text-xs text-muted-foreground">
-                    {TODAY_STATS.goals.calories.current} /{' '}
-                    {TODAY_STATS.goals.calories.target} cal
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-chart-2" />
-                <div>
-                  <div className="text-sm font-medium">Workout</div>
-                  <div className="text-xs text-muted-foreground">
-                    {TODAY_STATS.goals.workoutTime.current} /{' '}
-                    {TODAY_STATS.goals.workoutTime.target} min
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-chart-4" />
-                <div>
-                  <div className="text-sm font-medium">Steps</div>
-                  <div className="text-xs text-muted-foreground">
-                    {TODAY_STATS.goals.steps.current.toLocaleString()} /{' '}
-                    {TODAY_STATS.goals.steps.target.toLocaleString()}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Today's Stats - Radial Chart */}
+      <TodayProgressChart />
 
       {/* Weekly Summary */}
+
       <Card>
         <CardHeader>
           <CardTitle>Weekly Summary</CardTitle>
