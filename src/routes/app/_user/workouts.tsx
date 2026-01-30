@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import * as React from 'react'
 import { Calendar, Clock, Flame, ChevronRight, Play, List } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,6 +17,7 @@ export const Route = createFileRoute('/app/_user/workouts')({
 })
 
 function RouteComponent() {
+  const navigate = useNavigate()
   const [selectedWorkout, setSelectedWorkout] =
     React.useState<WorkoutDay | null>(null)
   const [showExercises, setShowExercises] = React.useState(false)
@@ -47,6 +48,10 @@ function RouteComponent() {
   const handleSwipeLeft = (workout: WorkoutDay) => {
     // Mark as skipped
     console.log('Workout skipped:', workout.name)
+  }
+
+  const startWorkout = () => {
+    navigate({ to: '/app/workout-session' })
   }
 
   return (
@@ -104,26 +109,18 @@ function RouteComponent() {
                 </div>
               </div>
 
-              <div className="flex gap-2">
-                <Button className="flex-1" size="lg">
-                  <Play className="w-5 h-5 mr-2" />
-                  Start Workout
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => {
-                    setSelectedWorkout(todaysWorkout)
-                    setShowExercises(true)
-                  }}
-                >
-                  <List className="w-5 h-5" />
-                </Button>
-              </div>
-
-              <div className="text-xs text-muted-foreground text-center">
-                Swipe right to mark complete • Swipe left to skip
-              </div>
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={() => {
+                  setSelectedWorkout(todaysWorkout)
+                  setShowExercises(true)
+                }}
+              >
+                <List className="w-5 h-5 mr-2" />
+                View Exercises
+              </Button>
             </CardContent>
           </Card>
         ) : (
@@ -201,6 +198,26 @@ function RouteComponent() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Floating Start Workout Button - Music Player Style */}
+      {todaysWorkout && todaysWorkout.exercises.length > 0 && (
+        <button
+          onClick={startWorkout}
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 z-40 px-8 py-4"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-primary-foreground/20 rounded-full p-2">
+              <Play className="w-5 h-5 fill-current" />
+            </div>
+            <div className="flex flex-col items-start">
+              <span className="text-sm font-bold">{todaysWorkout.name}</span>
+              <span className="text-xs opacity-80">
+                {todaysWorkout.exercises.length} exercises • {todaysWorkout.duration} min
+              </span>
+            </div>
+          </div>
+        </button>
+      )}
 
       {/* Exercise List Drawer */}
       <Drawer open={showExercises} onOpenChange={setShowExercises}>

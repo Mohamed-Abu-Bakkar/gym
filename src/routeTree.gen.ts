@@ -16,6 +16,7 @@ import { Route as AppManagementRouteRouteImport } from './routes/app/management/
 import { Route as AppManagementIndexRouteImport } from './routes/app/management/index'
 import { Route as AppUserIndexRouteImport } from './routes/app/_user/index'
 import { Route as AppUserWorkoutsRouteImport } from './routes/app/_user/workouts'
+import { Route as AppUserWorkoutSessionRouteImport } from './routes/app/_user/workout-session'
 import { Route as AppUserSessionsRouteImport } from './routes/app/_user/sessions'
 import { Route as AppUserLogsRouteImport } from './routes/app/_user/logs'
 import { Route as AppUserDietLogsRouteImport } from './routes/app/_user/diet-logs'
@@ -60,6 +61,11 @@ const AppUserIndexRoute = AppUserIndexRouteImport.update({
 const AppUserWorkoutsRoute = AppUserWorkoutsRouteImport.update({
   id: '/workouts',
   path: '/workouts',
+  getParentRoute: () => AppUserRoute,
+} as any)
+const AppUserWorkoutSessionRoute = AppUserWorkoutSessionRouteImport.update({
+  id: '/workout-session',
+  path: '/workout-session',
   getParentRoute: () => AppUserRoute,
 } as any)
 const AppUserSessionsRoute = AppUserSessionsRouteImport.update({
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/app/diet-logs': typeof AppUserDietLogsRoute
   '/app/logs': typeof AppUserLogsRoute
   '/app/sessions': typeof AppUserSessionsRoute
+  '/app/workout-session': typeof AppUserWorkoutSessionRoute
   '/app/workouts': typeof AppUserWorkoutsRoute
   '/app/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/app/diet-logs': typeof AppUserDietLogsRoute
   '/app/logs': typeof AppUserLogsRoute
   '/app/sessions': typeof AppUserSessionsRoute
+  '/app/workout-session': typeof AppUserWorkoutSessionRoute
   '/app/workouts': typeof AppUserWorkoutsRoute
   '/app': typeof AppUserIndexRoute
   '/app/management': typeof AppManagementIndexRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/app/_user/diet-logs': typeof AppUserDietLogsRoute
   '/app/_user/logs': typeof AppUserLogsRoute
   '/app/_user/sessions': typeof AppUserSessionsRoute
+  '/app/_user/workout-session': typeof AppUserWorkoutSessionRoute
   '/app/_user/workouts': typeof AppUserWorkoutsRoute
   '/app/_user/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/app/diet-logs'
     | '/app/logs'
     | '/app/sessions'
+    | '/app/workout-session'
     | '/app/workouts'
     | '/app/'
     | '/app/management/'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/app/diet-logs'
     | '/app/logs'
     | '/app/sessions'
+    | '/app/workout-session'
     | '/app/workouts'
     | '/app'
     | '/app/management'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/app/_user/diet-logs'
     | '/app/_user/logs'
     | '/app/_user/sessions'
+    | '/app/_user/workout-session'
     | '/app/_user/workouts'
     | '/app/_user/'
     | '/app/management/'
@@ -287,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/workouts'
       fullPath: '/app/workouts'
       preLoaderRoute: typeof AppUserWorkoutsRouteImport
+      parentRoute: typeof AppUserRoute
+    }
+    '/app/_user/workout-session': {
+      id: '/app/_user/workout-session'
+      path: '/workout-session'
+      fullPath: '/app/workout-session'
+      preLoaderRoute: typeof AppUserWorkoutSessionRouteImport
       parentRoute: typeof AppUserRoute
     }
     '/app/_user/sessions': {
@@ -388,6 +407,7 @@ interface AppUserRouteChildren {
   AppUserDietLogsRoute: typeof AppUserDietLogsRoute
   AppUserLogsRoute: typeof AppUserLogsRoute
   AppUserSessionsRoute: typeof AppUserSessionsRoute
+  AppUserWorkoutSessionRoute: typeof AppUserWorkoutSessionRoute
   AppUserWorkoutsRoute: typeof AppUserWorkoutsRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
 }
@@ -399,6 +419,7 @@ const AppUserRouteChildren: AppUserRouteChildren = {
   AppUserDietLogsRoute: AppUserDietLogsRoute,
   AppUserLogsRoute: AppUserLogsRoute,
   AppUserSessionsRoute: AppUserSessionsRoute,
+  AppUserWorkoutSessionRoute: AppUserWorkoutSessionRoute,
   AppUserWorkoutsRoute: AppUserWorkoutsRoute,
   AppUserIndexRoute: AppUserIndexRoute,
 }
