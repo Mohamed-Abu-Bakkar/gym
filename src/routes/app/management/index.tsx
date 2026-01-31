@@ -1,16 +1,13 @@
-import { useEffect, useState } from 'react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useEffect } from 'react'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
+import { useQuery } from 'convex/react'
 import {
-  // Activity,
-  // BarChart3,
-  // CalendarClock,
-  CheckCircle2,
-  ChevronRight,
-  // Phone,
-  // ShieldCheck,
   TrendingUp,
+  UtensilsCrossed,
+  Users,
+  ClipboardList,
+  ChevronRight,
 } from 'lucide-react'
-// import type { LucideIcon } from 'lucide-react'
 
 import { useAuth } from '@/components/auth/useAuth'
 import { Button } from '@/components/ui/button'
@@ -21,52 +18,25 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type {
-  TrainerDashboardData,
-  // TrainerQuickActionKey,
-} from '@/lib/mock-data'
-
-import { useTrainerManagement } from '@/features/management/management-context'
+import { api } from '../../../../convex/_generated/api'
 
 import './management.css'
 
 const privilegedRoles = new Set(['trainer', 'admin'])
 
-// const quickActionIconMap: Record<TrainerQuickActionKey, LucideIcon> = {
-//   programBuilder: Activity,
-//   sessionCheckins: CalendarClock,
-//   callClient: Phone,
-//   readinessReview: ShieldCheck,
-// } as const
-
 export const Route = createFileRoute('/app/management/')({
   component: RouteComponent,
 })
 
-type ClientRosterKey = keyof TrainerDashboardData['clients']
-
 function RouteComponent() {
   const { user, isLoading } = useAuth()
   const navigate = useNavigate()
-  const [clientView, setClientView] = useState<ClientRosterKey>('active')
-  const {
-    summary,
-    metrics,
-    // quickActions,
-    sessions,
-    // opsBoard,
-    clients,
-    moveClient,
-    programs,
-    programDetails,
-    assignWorkoutPattern,
-    assignDietPlan,
-    clientPatterns,
-    getWeightTrend,
-  } = useTrainerManagement()
 
-  const availableClients = [...clients.active, ...clients.flagged]
+  // Fetch diet plans
+  const dietPlans = useQuery(
+    api.dietPlans.getDietPlansByUser,
+    user ? { userId: user._id } : 'skip',
+  )
 
   useEffect(() => {
     if (isLoading) return
@@ -77,7 +47,7 @@ function RouteComponent() {
     }
 
     if (!privilegedRoles.has(user.role)) {
-      navigate({ to: '/app' })
+      navigate({ to: '/app/_user' })
     }
   }, [user, isLoading, navigate])
 
@@ -107,17 +77,12 @@ function RouteComponent() {
     )
   }
 
-  const roster = clients[clientView]
   const greetingName = user.name?.split(' ')[0] ?? 'Coach'
   const todayLabel = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
   })
-
-  const handleClearCheckIns = () => {
-    clients.flagged.forEach((client) => moveClient(client.id, 'active'))
-  }
 
   return (
     <div className="p-4 space-y-6 pb-16">
@@ -130,25 +95,130 @@ function RouteComponent() {
             <h1 className="text-2xl font-semibold">
               Welcome back, {greetingName}
             </h1>
-            <p className="text-muted-foreground">Focus: {summary.focusArea}</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" onClick={handleClearCheckIns}>
-              <CheckCircle2 className="h-4 w-4" />
-              Clear check-ins
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => navigate({ to: '/app/management/programs/new' })}
-            >
-              <TrendingUp className="h-4 w-4" />
-              New Program
-            </Button>
+            <p className="text-muted-foreground">Management Dashboard</p>
           </div>
         </div>
       </header>
 
+      {/* Quick Stats Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Link to="/app/management/clients">
+          <Card className="cursor-pointer hover:border-primary transition-colors h-full">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Clients</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">-</div>
+              <p className="text-xs text-muted-foreground">
+                Manage your athletes
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link to="/app/management/programs">
+          <Card className="cursor-pointer hover:border-primary transition-colors h-full">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Workout Programs
+              </CardTitle>
+              <ClipboardList className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">-</div>
+              <p className="text-xs text-muted-foreground">
+                Active training templates
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link to="/app/management/diet-plans">
+          <Card className="cursor-pointer hover:border-primary transition-colors h-full">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Diet Plans</CardTitle>
+              <UtensilsCrossed className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {dietPlans?.length ?? 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Nutrition templates ready
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
+
+      {/* Quick Actions */}
       <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+          <CardDescription>
+            Jump to key management workflows
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Link
+            to="/app/management/programs/new"
+            className="group flex items-center justify-between rounded-xl border border-border bg-muted/30 p-4 transition-all hover:border-primary hover:bg-muted/40"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <TrendingUp className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold">Create Workout Program</p>
+                <p className="text-sm text-muted-foreground">
+                  Build a new training template
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+          </Link>
+
+          <Link
+            to="/app/management/diet-plans/new"
+            className="group flex items-center justify-between rounded-xl border border-border bg-muted/30 p-4 transition-all hover:border-primary hover:bg-muted/40"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                <UtensilsCrossed className="h-5 w-5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="font-semibold">Create Diet Plan</p>
+                <p className="text-sm text-muted-foreground">
+                  Design a nutrition template
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+          </Link>
+
+          <Link
+            to="/app/management/clients"
+            className="group flex items-center justify-between rounded-xl border border-border bg-muted/30 p-4 transition-all hover:border-primary hover:bg-muted/40"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <Users className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-semibold">Manage Clients</p>
+                <p className="text-sm text-muted-foreground">
+                  View and update athlete roster
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+          </Link>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
         <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <CardTitle>Overall status</CardTitle>

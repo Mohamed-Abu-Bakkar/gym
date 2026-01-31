@@ -25,6 +25,7 @@ import { Route as AppUserDietLogsRouteImport } from './routes/app/_user/diet-log
 import { Route as AppUserDashboardRouteImport } from './routes/app/_user/dashboard'
 import { Route as AppUserAccountRouteImport } from './routes/app/_user/account'
 import { Route as AppManagementProgramsIndexRouteImport } from './routes/app/management/programs/index'
+import { Route as AppManagementDietPlansIndexRouteImport } from './routes/app/management/diet-plans/index'
 import { Route as AppManagementClientsIndexRouteImport } from './routes/app/management/clients/index'
 import { Route as AppUserDietPlansIndexRouteImport } from './routes/app/_user/diet-plans/index'
 import { Route as AppManagementProgramsNewRouteImport } from './routes/app/management/programs/new'
@@ -113,6 +114,12 @@ const AppManagementProgramsIndexRoute =
     path: '/programs/',
     getParentRoute: () => AppManagementRouteRoute,
   } as any)
+const AppManagementDietPlansIndexRoute =
+  AppManagementDietPlansIndexRouteImport.update({
+    id: '/diet-plans/',
+    path: '/diet-plans/',
+    getParentRoute: () => AppManagementRouteRoute,
+  } as any)
 const AppManagementClientsIndexRoute =
   AppManagementClientsIndexRouteImport.update({
     id: '/clients/',
@@ -170,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/app/management/programs/new': typeof AppManagementProgramsNewRoute
   '/app/diet-plans/': typeof AppUserDietPlansIndexRoute
   '/app/management/clients/': typeof AppManagementClientsIndexRoute
+  '/app/management/diet-plans/': typeof AppManagementDietPlansIndexRoute
   '/app/management/programs/': typeof AppManagementProgramsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -192,6 +200,7 @@ export interface FileRoutesByTo {
   '/app/management/programs/new': typeof AppManagementProgramsNewRoute
   '/app/diet-plans': typeof AppUserDietPlansIndexRoute
   '/app/management/clients': typeof AppManagementClientsIndexRoute
+  '/app/management/diet-plans': typeof AppManagementDietPlansIndexRoute
   '/app/management/programs': typeof AppManagementProgramsIndexRoute
 }
 export interface FileRoutesById {
@@ -217,6 +226,7 @@ export interface FileRoutesById {
   '/app/management/programs/new': typeof AppManagementProgramsNewRoute
   '/app/_user/diet-plans/': typeof AppUserDietPlansIndexRoute
   '/app/management/clients/': typeof AppManagementClientsIndexRoute
+  '/app/management/diet-plans/': typeof AppManagementDietPlansIndexRoute
   '/app/management/programs/': typeof AppManagementProgramsIndexRoute
 }
 export interface FileRouteTypes {
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/app/management/programs/new'
     | '/app/diet-plans/'
     | '/app/management/clients/'
+    | '/app/management/diet-plans/'
     | '/app/management/programs/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/app/management/programs/new'
     | '/app/diet-plans'
     | '/app/management/clients'
+    | '/app/management/diet-plans'
     | '/app/management/programs'
   id:
     | '__root__'
@@ -289,6 +301,7 @@ export interface FileRouteTypes {
     | '/app/management/programs/new'
     | '/app/_user/diet-plans/'
     | '/app/management/clients/'
+    | '/app/management/diet-plans/'
     | '/app/management/programs/'
   fileRoutesById: FileRoutesById
 }
@@ -414,6 +427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppManagementProgramsIndexRouteImport
       parentRoute: typeof AppManagementRouteRoute
     }
+    '/app/management/diet-plans/': {
+      id: '/app/management/diet-plans/'
+      path: '/diet-plans'
+      fullPath: '/app/management/diet-plans/'
+      preLoaderRoute: typeof AppManagementDietPlansIndexRouteImport
+      parentRoute: typeof AppManagementRouteRoute
+    }
     '/app/management/clients/': {
       id: '/app/management/clients/'
       path: '/clients'
@@ -465,6 +485,7 @@ interface AppManagementRouteRouteChildren {
   AppManagementProgramsProgramIdRoute: typeof AppManagementProgramsProgramIdRoute
   AppManagementProgramsNewRoute: typeof AppManagementProgramsNewRoute
   AppManagementClientsIndexRoute: typeof AppManagementClientsIndexRoute
+  AppManagementDietPlansIndexRoute: typeof AppManagementDietPlansIndexRoute
   AppManagementProgramsIndexRoute: typeof AppManagementProgramsIndexRoute
 }
 
@@ -474,6 +495,7 @@ const AppManagementRouteRouteChildren: AppManagementRouteRouteChildren = {
   AppManagementProgramsProgramIdRoute: AppManagementProgramsProgramIdRoute,
   AppManagementProgramsNewRoute: AppManagementProgramsNewRoute,
   AppManagementClientsIndexRoute: AppManagementClientsIndexRoute,
+  AppManagementDietPlansIndexRoute: AppManagementDietPlansIndexRoute,
   AppManagementProgramsIndexRoute: AppManagementProgramsIndexRoute,
 }
 

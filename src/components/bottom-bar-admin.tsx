@@ -7,6 +7,7 @@ import {
   NotebookPen,
   Plus,
   Users,
+  UtensilsCrossed,
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -32,7 +33,11 @@ const primaryNav: AdminNavItem[] = [
 
 const secondaryNav: AdminNavItem[] = [
   { to: '/app/management/programs', label: 'Programs', icon: ClipboardList },
-  { to: '/app/management/more', label: 'More', icon: Menu },
+  {
+    to: '/app/management/diet-plans',
+    label: 'Diet Plans',
+    icon: UtensilsCrossed,
+  },
 ]
 
 interface BottomBarAdminProps {
@@ -155,6 +160,24 @@ export function BottomBarAdmin({
                   <p className="font-semibold">Assign or edit program</p>
                   <p className="text-sm text-muted-foreground">
                     Open the program shelf.
+                  </p>
+                </div>
+              </Button>
+            </Link>
+
+            <Link to="/app/management/diet-plans">
+              <Button
+                variant="outline"
+                className="w-full h-16 justify-start gap-4"
+                onClick={() => setDrawerOpen(false)}
+              >
+                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                  <UtensilsCrossed className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold">Manage diet plans</p>
+                  <p className="text-sm text-muted-foreground">
+                    Create or edit nutrition templates.
                   </p>
                 </div>
               </Button>
