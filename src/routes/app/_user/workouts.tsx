@@ -31,12 +31,12 @@ function RouteComponent() {
 
   // Get day name mapping
   const dayNames: Record<WorkoutDay['day'], string> = {
-    mon: 'Monday',
-    tue: 'Tuesday',
-    wed: 'Wednesday',
-    thu: 'Thursday',
-    fri: 'Friday',
-    sat: 'Saturday',
+    mon: 'Mon',
+    tue: 'Tue',
+    wed: 'Wed',
+    thu: 'Thu',
+    fri: 'Fri',
+    sat: 'Sat',
     sun: 'Sunday',
   }
 

@@ -23,6 +23,10 @@ import { Route as AppUserDietLogsRouteImport } from './routes/app/_user/diet-log
 import { Route as AppUserDashboardRouteImport } from './routes/app/_user/dashboard'
 import { Route as AppUserAccountRouteImport } from './routes/app/_user/account'
 import { Route as AppUserAboutRouteImport } from './routes/app/_user/about'
+import { Route as AppManagementProgramsIndexRouteImport } from './routes/app/management/programs/index'
+import { Route as AppManagementClientsIndexRouteImport } from './routes/app/management/clients/index'
+import { Route as AppManagementProgramsProgramIdRouteImport } from './routes/app/management/programs/$programId'
+import { Route as AppManagementClientsClientIdRouteImport } from './routes/app/management/clients/$clientId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,6 +98,30 @@ const AppUserAboutRoute = AppUserAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => AppUserRoute,
 } as any)
+const AppManagementProgramsIndexRoute =
+  AppManagementProgramsIndexRouteImport.update({
+    id: '/programs/',
+    path: '/programs/',
+    getParentRoute: () => AppManagementRouteRoute,
+  } as any)
+const AppManagementClientsIndexRoute =
+  AppManagementClientsIndexRouteImport.update({
+    id: '/clients/',
+    path: '/clients/',
+    getParentRoute: () => AppManagementRouteRoute,
+  } as any)
+const AppManagementProgramsProgramIdRoute =
+  AppManagementProgramsProgramIdRouteImport.update({
+    id: '/programs/$programId',
+    path: '/programs/$programId',
+    getParentRoute: () => AppManagementRouteRoute,
+  } as any)
+const AppManagementClientsClientIdRoute =
+  AppManagementClientsClientIdRouteImport.update({
+    id: '/clients/$clientId',
+    path: '/clients/$clientId',
+    getParentRoute: () => AppManagementRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +138,10 @@ export interface FileRoutesByFullPath {
   '/app/workouts': typeof AppUserWorkoutsRoute
   '/app/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
+  '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
+  '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
+  '/app/management/clients/': typeof AppManagementClientsIndexRoute
+  '/app/management/programs/': typeof AppManagementProgramsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,6 +156,10 @@ export interface FileRoutesByTo {
   '/app/workouts': typeof AppUserWorkoutsRoute
   '/app': typeof AppUserIndexRoute
   '/app/management': typeof AppManagementIndexRoute
+  '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
+  '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
+  '/app/management/clients': typeof AppManagementClientsIndexRoute
+  '/app/management/programs': typeof AppManagementProgramsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,6 +177,10 @@ export interface FileRoutesById {
   '/app/_user/workouts': typeof AppUserWorkoutsRoute
   '/app/_user/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
+  '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
+  '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
+  '/app/management/clients/': typeof AppManagementClientsIndexRoute
+  '/app/management/programs/': typeof AppManagementProgramsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -159,6 +199,10 @@ export interface FileRouteTypes {
     | '/app/workouts'
     | '/app/'
     | '/app/management/'
+    | '/app/management/clients/$clientId'
+    | '/app/management/programs/$programId'
+    | '/app/management/clients/'
+    | '/app/management/programs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -173,6 +217,10 @@ export interface FileRouteTypes {
     | '/app/workouts'
     | '/app'
     | '/app/management'
+    | '/app/management/clients/$clientId'
+    | '/app/management/programs/$programId'
+    | '/app/management/clients'
+    | '/app/management/programs'
   id:
     | '__root__'
     | '/'
@@ -189,6 +237,10 @@ export interface FileRouteTypes {
     | '/app/_user/workouts'
     | '/app/_user/'
     | '/app/management/'
+    | '/app/management/clients/$clientId'
+    | '/app/management/programs/$programId'
+    | '/app/management/clients/'
+    | '/app/management/programs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -298,15 +350,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserAboutRouteImport
       parentRoute: typeof AppUserRoute
     }
+    '/app/management/programs/': {
+      id: '/app/management/programs/'
+      path: '/programs'
+      fullPath: '/app/management/programs/'
+      preLoaderRoute: typeof AppManagementProgramsIndexRouteImport
+      parentRoute: typeof AppManagementRouteRoute
+    }
+    '/app/management/clients/': {
+      id: '/app/management/clients/'
+      path: '/clients'
+      fullPath: '/app/management/clients/'
+      preLoaderRoute: typeof AppManagementClientsIndexRouteImport
+      parentRoute: typeof AppManagementRouteRoute
+    }
+    '/app/management/programs/$programId': {
+      id: '/app/management/programs/$programId'
+      path: '/programs/$programId'
+      fullPath: '/app/management/programs/$programId'
+      preLoaderRoute: typeof AppManagementProgramsProgramIdRouteImport
+      parentRoute: typeof AppManagementRouteRoute
+    }
+    '/app/management/clients/$clientId': {
+      id: '/app/management/clients/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/app/management/clients/$clientId'
+      preLoaderRoute: typeof AppManagementClientsClientIdRouteImport
+      parentRoute: typeof AppManagementRouteRoute
+    }
   }
 }
 
 interface AppManagementRouteRouteChildren {
   AppManagementIndexRoute: typeof AppManagementIndexRoute
+  AppManagementClientsClientIdRoute: typeof AppManagementClientsClientIdRoute
+  AppManagementProgramsProgramIdRoute: typeof AppManagementProgramsProgramIdRoute
+  AppManagementClientsIndexRoute: typeof AppManagementClientsIndexRoute
+  AppManagementProgramsIndexRoute: typeof AppManagementProgramsIndexRoute
 }
 
 const AppManagementRouteRouteChildren: AppManagementRouteRouteChildren = {
   AppManagementIndexRoute: AppManagementIndexRoute,
+  AppManagementClientsClientIdRoute: AppManagementClientsClientIdRoute,
+  AppManagementProgramsProgramIdRoute: AppManagementProgramsProgramIdRoute,
+  AppManagementClientsIndexRoute: AppManagementClientsIndexRoute,
+  AppManagementProgramsIndexRoute: AppManagementProgramsIndexRoute,
 }
 
 const AppManagementRouteRouteWithChildren =

@@ -51,7 +51,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
         <script src="https://tweakcn.com/live-preview.min.js"></script>
       </head>
-      <body>
+      <body className="dark">
         <ConvexProvider>
           <AuthProvider>
             {children}

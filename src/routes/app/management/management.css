@@ -1,0 +1,29 @@
+:root {
+  --mg-progress-bg: hsl(240 5% 90%);
+  --mg-progress-fill: hsl(250 84% 54%);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--mg-progress-bg);
+  overflow: hidden;
+  appearance: none;
+  border: none;
+}
+
+.progress-bar::-webkit-progress-bar {
+  background-color: var(--mg-progress-bg);
+  border-radius: 9999px;
+}
+
+.progress-bar::-webkit-progress-value {
+  background-color: var(--mg-progress-fill);
+  border-radius: 9999px;
+}
+
+.progress-bar::-moz-progress-bar {
+  background-color: var(--mg-progress-fill);
+  border-radius: 9999px;
+}
