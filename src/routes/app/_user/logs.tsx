@@ -1,18 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Utensils, Scale } from 'lucide-react'
+import { Scale, Utensils } from 'lucide-react'
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card'
 import {
   Tabs,
-  TabsList,
-  TabsTrigger,
   TabsContent,
   TabsContents,
+  TabsList,
+  TabsTrigger,
 } from '@/components/animate-ui/components/radix/tabs'
 
 export const Route = createFileRoute('/app/_user/logs')({

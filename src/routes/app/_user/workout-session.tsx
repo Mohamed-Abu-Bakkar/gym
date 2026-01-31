@@ -41,3 +41,6 @@ function RouteComponent() {
           </div>
         </CardContent>
       </Card>
+    </div>
+  )
+}

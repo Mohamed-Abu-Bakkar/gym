@@ -1,15 +1,6 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import * as React from 'react'
-import { Calendar, Dumbbell, Play } from 'lucide-react'
+import { createFileRoute } from '@tanstack/react-router'
+import { Calendar, Dumbbell } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from '@/components/ui/drawer'
 
 export const Route = createFileRoute('/app/_user/workouts')({
   component: RouteComponent,
@@ -63,3 +54,6 @@ function RouteComponent() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  )
+}

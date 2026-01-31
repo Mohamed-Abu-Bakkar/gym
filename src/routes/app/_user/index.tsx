@@ -214,22 +214,6 @@ function RouteComponent() {
           </div>
         </CardContent>
       </Card>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {log.duration} min • {log.caloriesBurned} cal
-                  </div>
-                </div>
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {new Date(log.startTime).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                })}
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
 
       {/* Weight Log Drawer */}
       <Drawer open={weightDrawerOpen} onOpenChange={setWeightDrawerOpen}>
