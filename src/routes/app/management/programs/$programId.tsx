@@ -71,9 +71,7 @@ function ProgramDetailRoute() {
       <Card>
         <CardHeader>
           <CardTitle>Program Details</CardTitle>
-          <CardDescription>
-            View and manage program information
-          </CardDescription>
+          <CardDescription>View and manage program information</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">

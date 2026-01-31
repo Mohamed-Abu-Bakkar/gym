@@ -61,9 +61,7 @@ function RouteComponent() {
         </Link>
         <div>
           <h1 className="text-2xl font-semibold">Create Program</h1>
-          <p className="text-muted-foreground">
-            Design a new training program
-          </p>
+          <p className="text-muted-foreground">Design a new training program</p>
         </div>
       </header>
 
@@ -93,4 +91,3 @@ function RouteComponent() {
     </div>
   )
 }
-

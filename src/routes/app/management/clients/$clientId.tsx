@@ -71,9 +71,7 @@ function ClientDetailRoute() {
       <Card>
         <CardHeader>
           <CardTitle>Client Profile</CardTitle>
-          <CardDescription>
-            View and manage client information
-          </CardDescription>
+          <CardDescription>View and manage client information</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">

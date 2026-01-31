@@ -153,9 +153,7 @@ function RouteComponent() {
       <Card>
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>
-            Jump to key management workflows
-          </CardDescription>
+          <CardDescription>Jump to key management workflows</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <Link

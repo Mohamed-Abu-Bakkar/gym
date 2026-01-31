@@ -83,9 +83,7 @@ function ClientsRoute() {
       <Card>
         <CardHeader>
           <CardTitle>Client Roster</CardTitle>
-          <CardDescription>
-            View and manage your athletes
-          </CardDescription>
+          <CardDescription>View and manage your athletes</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">

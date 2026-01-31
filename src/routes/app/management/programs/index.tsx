@@ -1,10 +1,6 @@
 import { useEffect } from 'react'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import {
-  ClipboardList,
-  Plus,
-  ArrowLeft,
-} from 'lucide-react'
+import { ClipboardList, Plus, ArrowLeft } from 'lucide-react'
 
 import { useAuth } from '@/components/auth/useAuth'
 import { Button } from '@/components/ui/button'
@@ -129,7 +125,8 @@ function ProgramsRoute() {
             <div className="space-y-2">
               <h3 className="font-semibold">Training programs coming soon</h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                Workout program management will be integrated with Convex backend.
+                Workout program management will be integrated with Convex
+                backend.
               </p>
             </div>
           </div>
