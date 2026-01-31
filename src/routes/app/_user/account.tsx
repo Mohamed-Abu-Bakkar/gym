@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import {
   User,
   Bell,
@@ -8,15 +8,48 @@ import {
   Mail,
   Phone,
   Camera,
+  Loader2,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/components/auth/useAuth'
+import { useQuery } from 'convex/react'
+import { api } from 'convex/_generated/api'
 
 export const Route = createFileRoute('/app/_user/account')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const { user, signOut } = useAuth()
+  const navigate = useNavigate()
+
+  // Fetch user stats
+  const workoutStats = useQuery(
+    api.workoutLogs.getWorkoutStats,
+    user ? { userId: user._id } : 'skip',
+  )
+  const userMeta = useQuery(
+    api.users.getUserWithMeta,
+    user ? { userId: user._id } : 'skip',
+  )
+
+  const handleLogout = () => {
+    signOut()
+    navigate({ to: '/app/sign-in' })
+  }
+
+  const formatDuration = (minutes: number) => {
+    const hours = Math.floor(minutes / 60)
+    return hours > 0 ? `${hours}h` : `${minutes}m`
+  }
+
+  const memberSince = user
+    ? new Date(user.createdAt).toLocaleDateString('en-US', {
+        month: 'short',
+        year: 'numeric',
+      })
+    : 'Unknown'
   return (
     <div className="p-4 space-y-6">
       {/* Header */}
@@ -35,9 +68,9 @@ function RouteComponent() {
               <User className="w-10 h-10 text-primary" />
             </div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold">John Doe</h2>
+              <h2 className="text-xl font-bold">{user?.name ?? 'Guest'}</h2>
               <p className="text-sm text-muted-foreground">
-                Member since Jan 2026
+                Member since {memberSince}
               </p>
             </div>
             <Button variant="outline" size="sm">
@@ -48,11 +81,11 @@ function RouteComponent() {
           <div className="mt-6 space-y-3">
             <div className="flex items-center gap-3 text-sm">
               <Mail className="w-4 h-4 text-muted-foreground" />
-              <span>john.doe@example.com</span>
+              <span>{user?.email ?? 'No email'}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <Phone className="w-4 h-4 text-muted-foreground" />
-              <span>+1 (555) 123-4567</span>
+              <span>{user?.phoneNumber ?? 'No phone'}</span>
             </div>
           </div>
         </CardContent>
@@ -66,16 +99,26 @@ function RouteComponent() {
             <CardTitle>Your Stats</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold">24</div>
-                <div className="text-xs text-muted-foreground">Workouts</div>
+            {!workoutStats ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">18h</div>
-                <div className="text-xs text-muted-foreground">Total Time</div>
+            ) : (
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold">
+                    {workoutStats.completedWorkouts}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Workouts</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">
+                    {formatDuration(workoutStats.totalDuration)}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Total Time</div>
+                </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
@@ -262,7 +305,12 @@ function RouteComponent() {
       </div>
 
       {/* Logout Button */}
-      <Button variant="destructive" className="w-full" size="lg">
+      <Button
+        variant="destructive"
+        className="w-full"
+        size="lg"
+        onClick={handleLogout}
+      >
         <LogOut className="w-5 h-5 mr-2" />
         Logout
       </Button>

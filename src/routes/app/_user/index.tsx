@@ -8,12 +8,12 @@ import {
   UtensilsCrossed,
   Camera,
   X,
+  Loader2,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
-import { ChartRadialLabel } from '@/components/charts/chart-radial-label'
 import { TodayProgressChart } from '@/components/charts/today-progress-chart'
 import {
   Drawer,
@@ -23,16 +23,21 @@ import {
   DrawerDescription,
   DrawerFooter,
 } from '@/components/ui/drawer'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { MEAL_TYPES } from '@/lib/constants'
+import { useAuth } from '@/components/auth/useAuth'
+import { useQuery, useMutation } from 'convex/react'
+import { api } from 'convex/_generated/api'
 
 export const Route = createFileRoute('/app/_user/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const { user } = useAuth()
+
   const [weightDrawerOpen, setWeightDrawerOpen] = useState(false)
   const [weight, setWeight] = useState('')
 
@@ -43,21 +48,83 @@ function RouteComponent() {
   const [dietDescription, setDietDescription] = useState('')
   const [calories, setCalories] = useState('')
 
-  const handleLogWeight = () => {
+  // Database queries
+  const workoutStats = useQuery(
+    api.workoutLogs.getWorkoutStats,
+    user ? { userId: user._id } : 'skip',
+  )
+  const recentWorkouts = useQuery(
+    api.workoutLogs.getWorkoutLogsByUser,
+    user ? { userId: user._id, limit: 7 } : 'skip',
+  )
+  const todayCalories = useQuery(
+    api.dietLogs.getTodayCalories,
+    user ? { userId: user._id } : 'skip',
+  )
+
+  // Mutations
+  const addWeightLog = useMutation(api.weightLogs.addWeightLog)
+  const addDietLog = useMutation(api.dietLogs.addDietLog)
+
+  // Calculate weekly stats
+  const getWeeklyStats = () => {
+    if (!recentWorkouts) return { days: [], totalCalories: 0, totalTime: 0, workoutCount: 0 }
+    
+    const now = new Date()
+    const weekData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => {
+      const dayDate = new Date(now)
+      const currentDay = now.getDay()
+      const targetDay = index === 6 ? 0 : index + 1 // Monday=1 to Sunday=0
+      const diff = currentDay - targetDay
+      dayDate.setDate(now.getDate() - diff)
+      dayDate.setHours(0, 0, 0, 0)
+      const dayEnd = new Date(dayDate)
+      dayEnd.setHours(23, 59, 59, 999)
+
+      const dayWorkouts = recentWorkouts.filter(w => {
+        const workoutDate = new Date(w.startTime)
+        return workoutDate >= dayDate && workoutDate <= dayEnd
+      })
+
+      const calories = dayWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)
+      return { day, calories }
+    })
+
+    const totalCalories = recentWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)
+    const totalTime = recentWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0)
+    const workoutCount = recentWorkouts.filter(w => w.status === 'completed').length
+
+    return { days: weekData, totalCalories, totalTime, workoutCount }
+  }
+
+  const weeklyStats = getWeeklyStats()
+
+  const handleLogWeight = async () => {
+    if (!user) {
+      toast.error('Please sign in first')
+      return
+    }
     const weightValue = parseFloat(weight)
     if (isNaN(weightValue) || weightValue <= 0) {
       toast.error('Please enter a valid weight')
       return
     }
 
-    // TODO: Call convex mutation to save weight
-    // await addWeightLog({ userId: currentUser.id, weight: weightValue })
-    toast.success(`Weight logged: ${weightValue} kg`)
-    setWeight('')
-    setWeightDrawerOpen(false)
+    try {
+      await addWeightLog({ userId: user._id, weight: weightValue })
+      toast.success(`Weight logged: ${weightValue} kg`)
+      setWeight('')
+      setWeightDrawerOpen(false)
+    } catch {
+      toast.error('Failed to log weight')
+    }
   }
 
-  const handleLogDiet = () => {
+  const handleLogDiet = async () => {
+    if (!user) {
+      toast.error('Please sign in first')
+      return
+    }
     if (!dietTitle.trim()) {
       toast.error('Please enter a meal title')
       return
@@ -68,15 +135,30 @@ function RouteComponent() {
       return
     }
 
-    // TODO: Call convex mutation to save diet
-    // await addDietLog({ userId: currentUser.id, mealType, title: dietTitle, description: dietDescription, calories: caloriesValue })
-    toast.success(
-      `${mealType.charAt(0).toUpperCase() + mealType.slice(1)} logged!`,
-    )
-    setDietTitle('')
-    setDietDescription('')
-    setCalories('')
-    setDietDrawerOpen(false)
+    try {
+      await addDietLog({
+        userId: user._id,
+        mealType,
+        title: dietTitle,
+        description: dietDescription,
+        calories: caloriesValue,
+      })
+      toast.success(
+        `${mealType.charAt(0).toUpperCase() + mealType.slice(1)} logged!`,
+      )
+      setDietTitle('')
+      setDietDescription('')
+      setCalories('')
+      setDietDrawerOpen(false)
+    } catch {
+      toast.error('Failed to log meal')
+    }
+  }
+
+  const formatDuration = (minutes: number) => {
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`
   }
 
   return (
@@ -104,31 +186,29 @@ function RouteComponent() {
           <div>
             <h3 className="text-sm font-medium mb-3">Calories Burned</h3>
             <div className="flex items-end justify-between h-32 gap-2">
-              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(
-                (day, i) => {
-                  const calories = [350, 0, 320, 340, 300, 360, 150][i]
-                  const height = (calories / 400) * 100
-                  return (
+              {weeklyStats.days.map(({ day, calories }) => {
+                const maxCalories = Math.max(...weeklyStats.days.map(d => d.calories), 400)
+                const height = maxCalories > 0 ? (calories / maxCalories) * 100 : 0
+                return (
+                  <div
+                    key={day}
+                    className="flex-1 flex flex-col items-center gap-2"
+                  >
                     <div
-                      key={day}
-                      className="flex-1 flex flex-col items-center gap-2"
+                      className="w-full bg-muted rounded-t-lg relative"
+                      style={{
+                        height: `${height}%`,
+                        minHeight: calories > 0 ? '20%' : '4px',
+                      }}
                     >
-                      <div
-                        className="w-full bg-muted rounded-t-lg relative"
-                        style={{
-                          height: `${height}%`,
-                          minHeight: calories > 0 ? '20%' : '0',
-                        }}
-                      >
-                        <div className="absolute inset-0 bg-chart-1 rounded-t-lg" />
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {day}
-                      </span>
+                      <div className="absolute inset-0 bg-chart-1 rounded-t-lg" />
                     </div>
-                  )
-                },
-              )}
+                    <span className="text-xs text-muted-foreground">
+                      {day}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           </div>
 
@@ -139,28 +219,39 @@ function RouteComponent() {
                 <Flame className="w-4 h-4" />
                 <span className="text-sm">Total Calories</span>
               </div>
-              <div className="text-2xl font-bold">1,820</div>
+              <div className="text-2xl font-bold">
+                {workoutStats?.totalCalories?.toLocaleString() ?? '0'}
+              </div>
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Clock className="w-4 h-4" />
                 <span className="text-sm">Total Time</span>
               </div>
-              <div className="text-2xl font-bold">5h 15m</div>
+              <div className="text-2xl font-bold">
+                {formatDuration(workoutStats?.totalDuration ?? 0)}
+              </div>
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Activity className="w-4 h-4" />
                 <span className="text-sm">Workouts</span>
               </div>
-              <div className="text-2xl font-bold">5</div>
+              <div className="text-2xl font-bold">
+                {workoutStats?.completedWorkouts ?? 0}
+              </div>
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <TrendingUp className="w-4 h-4" />
                 <span className="text-sm">Avg/Day</span>
               </div>
-              <div className="text-2xl font-bold">260 cal</div>
+              <div className="text-2xl font-bold">
+                {weeklyStats.workoutCount > 0
+                  ? Math.round(weeklyStats.totalCalories / 7)
+                  : 0}{' '}
+                cal
+              </div>
             </div>
           </div>
         </CardContent>
@@ -206,12 +297,66 @@ function RouteComponent() {
           <CardTitle>Recent Activity</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 space-y-2">
-            <Activity className="h-8 w-8 text-muted-foreground mx-auto" />
-            <p className="text-sm text-muted-foreground">
-              Your recent workouts will appear here
-            </p>
-          </div>
+          {!recentWorkouts ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : recentWorkouts.length === 0 ? (
+            <div className="text-center py-8 space-y-2">
+              <Activity className="h-8 w-8 text-muted-foreground mx-auto" />
+              <p className="text-sm text-muted-foreground">
+                Your recent workouts will appear here
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {recentWorkouts.slice(0, 5).map((workout) => (
+                <div
+                  key={workout._id}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        workout.workoutType === 'strength'
+                          ? 'bg-blue-500/10 text-blue-500'
+                          : workout.workoutType === 'cardio'
+                            ? 'bg-red-500/10 text-red-500'
+                            : workout.workoutType === 'flexibility'
+                              ? 'bg-green-500/10 text-green-500'
+                              : 'bg-purple-500/10 text-purple-500'
+                      }`}
+                    >
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="font-medium capitalize">
+                        {workout.workoutType} Workout
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(workout.startTime).toLocaleDateString(
+                          'en-US',
+                          {
+                            weekday: 'short',
+                            month: 'short',
+                            day: 'numeric',
+                          },
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium">
+                      {workout.caloriesBurned ?? 0} cal
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {workout.duration ? formatDuration(workout.duration) : '-'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 

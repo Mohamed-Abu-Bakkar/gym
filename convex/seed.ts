@@ -502,25 +502,235 @@ export const seedDatabase = mutation({
             updatedAt: now - 3 * 24 * 60 * 60 * 1000,
         })
 
-        // Create diet logs
+        // Create more workout logs for the past week
+        // Day 0 (today) - client1 morning workout
+        const workoutLog3Id = await ctx.db.insert('workoutLogs', {
+            userId: client1Id,
+            startTime: now - 4 * 60 * 60 * 1000, // 4 hours ago
+            endTime: now - 3 * 60 * 60 * 1000,
+            status: 'completed',
+            workoutType: 'strength',
+            duration: 60,
+            caloriesBurned: 320,
+            createdAt: now - 4 * 60 * 60 * 1000,
+            updatedAt: now - 3 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('workouts', {
+            workoutLogId: workoutLog3Id,
+            exercises: [
+                { createdAt: now, exerciseName: 'Barbell Bench Press', sets: 4, reps: 8, weight: 65 },
+                { createdAt: now, exerciseName: 'Incline Dumbbell Press', sets: 3, reps: 10, weight: 25 },
+                { createdAt: now, exerciseName: 'Cable Flyes', sets: 3, reps: 12, weight: 15 },
+            ],
+            createdAt: now - 4 * 60 * 60 * 1000,
+            updatedAt: now - 3 * 60 * 60 * 1000,
+        })
+
+        // Day 1 (yesterday) - client1
+        const workoutLog4Id = await ctx.db.insert('workoutLogs', {
+            userId: client1Id,
+            startTime: now - 1 * 24 * 60 * 60 * 1000,
+            endTime: now - 1 * 24 * 60 * 60 * 1000 + 3600000,
+            status: 'completed',
+            workoutType: 'cardio',
+            duration: 45,
+            caloriesBurned: 380,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('workouts', {
+            workoutLogId: workoutLog4Id,
+            exercises: [
+                { createdAt: now, exerciseName: 'Treadmill Run', sets: 1, reps: 1, notes: '30 min HIIT' },
+                { createdAt: now, exerciseName: 'Rowing Machine', sets: 1, reps: 1, notes: '15 min steady' },
+            ],
+            createdAt: now - 1 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+        })
+
+        // Day 2 - client1
+        const workoutLog5Id = await ctx.db.insert('workoutLogs', {
+            userId: client1Id,
+            startTime: now - 2 * 24 * 60 * 60 * 1000,
+            endTime: now - 2 * 24 * 60 * 60 * 1000 + 4200000,
+            status: 'completed',
+            workoutType: 'strength',
+            duration: 70,
+            caloriesBurned: 400,
+            createdAt: now - 2 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 24 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('workouts', {
+            workoutLogId: workoutLog5Id,
+            exercises: [
+                { createdAt: now, exerciseName: 'Barbell Squat', sets: 4, reps: 8, weight: 90 },
+                { createdAt: now, exerciseName: 'Leg Press', sets: 3, reps: 12, weight: 180 },
+                { createdAt: now, exerciseName: 'Leg Curl', sets: 3, reps: 10, weight: 40 },
+            ],
+            createdAt: now - 2 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 24 * 60 * 60 * 1000,
+        })
+
+        // Day 4 - client1
+        const workoutLog6Id = await ctx.db.insert('workoutLogs', {
+            userId: client1Id,
+            startTime: now - 4 * 24 * 60 * 60 * 1000,
+            endTime: now - 4 * 24 * 60 * 60 * 1000 + 3600000,
+            status: 'completed',
+            workoutType: 'strength',
+            duration: 60,
+            caloriesBurned: 350,
+            createdAt: now - 4 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 4 * 24 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('workouts', {
+            workoutLogId: workoutLog6Id,
+            exercises: [
+                { createdAt: now, exerciseName: 'Deadlift', sets: 4, reps: 6, weight: 110 },
+                { createdAt: now, exerciseName: 'Barbell Row', sets: 3, reps: 10, weight: 60 },
+                { createdAt: now, exerciseName: 'Pull Ups', sets: 3, reps: 8, notes: 'Bodyweight' },
+            ],
+            createdAt: now - 4 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 4 * 24 * 60 * 60 * 1000,
+        })
+
+        // Day 5 - client1
+        const workoutLog7Id = await ctx.db.insert('workoutLogs', {
+            userId: client1Id,
+            startTime: now - 5 * 24 * 60 * 60 * 1000,
+            endTime: now - 5 * 24 * 60 * 60 * 1000 + 3000000,
+            status: 'completed',
+            workoutType: 'flexibility',
+            duration: 50,
+            caloriesBurned: 150,
+            createdAt: now - 5 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 5 * 24 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('workouts', {
+            workoutLogId: workoutLog7Id,
+            exercises: [
+                { createdAt: now, exerciseName: 'Yoga Flow', sets: 1, reps: 1, notes: '30 min' },
+                { createdAt: now, exerciseName: 'Stretching', sets: 1, reps: 1, notes: '20 min' },
+            ],
+            createdAt: now - 5 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 5 * 24 * 60 * 60 * 1000,
+        })
+
+        // Client 2 workouts for this week
+        const workoutLog8Id = await ctx.db.insert('workoutLogs', {
+            userId: client2Id,
+            startTime: now - 1 * 24 * 60 * 60 * 1000,
+            endTime: now - 1 * 24 * 60 * 60 * 1000 + 5400000,
+            status: 'completed',
+            workoutType: 'strength',
+            duration: 90,
+            caloriesBurned: 550,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('workouts', {
+            workoutLogId: workoutLog8Id,
+            exercises: [
+                { createdAt: now, exerciseName: 'Barbell Squat', sets: 5, reps: 5, weight: 120, notes: 'Heavy day' },
+                { createdAt: now, exerciseName: 'Romanian Deadlift', sets: 4, reps: 8, weight: 80 },
+                { createdAt: now, exerciseName: 'Leg Extension', sets: 3, reps: 15, weight: 50 },
+            ],
+            createdAt: now - 1 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+        })
+
+        // Create diet logs - comprehensive for multiple days
+        // Today's meals for client1
         await ctx.db.insert('dietLogs', {
             userId: client1Id,
             mealType: 'breakfast',
             title: 'Oatmeal with Berries',
-            description: 'Oats, blueberries, almond milk',
+            description: 'Oats, blueberries, almond milk, chia seeds',
             calories: 350,
             createdAt: now - 2 * 60 * 60 * 1000, // 2 hours ago
         })
 
         await ctx.db.insert('dietLogs', {
             userId: client1Id,
-            mealType: 'lunch',
-            title: 'Grilled Chicken Salad',
-            description: 'Chicken breast, mixed greens, olive oil',
-            calories: 450,
-            createdAt: now - 6 * 60 * 60 * 1000, // 6 hours ago
+            mealType: 'postWorkout',
+            title: 'Protein Shake',
+            description: 'Whey protein, banana, almond butter',
+            calories: 280,
+            createdAt: now - 3 * 60 * 60 * 1000, // 3 hours ago (after workout)
         })
 
+        // Yesterday's meals for client1
+        await ctx.db.insert('dietLogs', {
+            userId: client1Id,
+            mealType: 'breakfast',
+            title: 'Scrambled Eggs',
+            description: '3 eggs, whole wheat toast, avocado',
+            calories: 420,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000 - 2 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client1Id,
+            mealType: 'lunch',
+            title: 'Grilled Chicken Salad',
+            description: 'Chicken breast, mixed greens, olive oil dressing',
+            calories: 450,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000 - 6 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client1Id,
+            mealType: 'dinner',
+            title: 'Salmon with Quinoa',
+            description: 'Baked salmon, quinoa, steamed vegetables',
+            calories: 580,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000 - 12 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client1Id,
+            mealType: 'snack',
+            title: 'Greek Yogurt',
+            description: 'Greek yogurt with honey and walnuts',
+            calories: 180,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000 - 9 * 60 * 60 * 1000,
+        })
+
+        // Day 2 meals for client1
+        await ctx.db.insert('dietLogs', {
+            userId: client1Id,
+            mealType: 'breakfast',
+            title: 'Protein Pancakes',
+            description: 'Oat flour pancakes with maple syrup',
+            calories: 380,
+            createdAt: now - 2 * 24 * 60 * 60 * 1000 - 2 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client1Id,
+            mealType: 'lunch',
+            title: 'Turkey Sandwich',
+            description: 'Whole grain bread, turkey, lettuce, tomato',
+            calories: 410,
+            createdAt: now - 2 * 24 * 60 * 60 * 1000 - 6 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client1Id,
+            mealType: 'dinner',
+            title: 'Grilled Steak',
+            description: 'Lean steak, sweet potato, green beans',
+            calories: 620,
+            createdAt: now - 2 * 24 * 60 * 60 * 1000 - 12 * 60 * 60 * 1000,
+        })
+
+        // Today's meals for client2
         await ctx.db.insert('dietLogs', {
             userId: client2Id,
             mealType: 'breakfast',
@@ -532,11 +742,57 @@ export const seedDatabase = mutation({
 
         await ctx.db.insert('dietLogs', {
             userId: client2Id,
+            mealType: 'snack',
+            title: 'Protein Bar',
+            description: 'Quest protein bar',
+            calories: 200,
+            createdAt: now - 5 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client2Id,
             mealType: 'postWorkout',
             title: 'Mass Gainer Shake',
-            description: 'Whey protein, oats, banana, milk',
-            calories: 500,
+            description: 'Whey protein, oats, banana, milk, peanut butter',
+            calories: 650,
             createdAt: now - 1 * 60 * 60 * 1000, // 1 hour ago
+        })
+
+        // Yesterday's meals for client2
+        await ctx.db.insert('dietLogs', {
+            userId: client2Id,
+            mealType: 'breakfast',
+            title: 'Egg White Omelette',
+            description: '6 egg whites, cheese, spinach, toast',
+            calories: 480,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000 - 2 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client2Id,
+            mealType: 'lunch',
+            title: 'Beef & Rice Bowl',
+            description: 'Lean ground beef, brown rice, broccoli',
+            calories: 720,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000 - 6 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client2Id,
+            mealType: 'dinner',
+            title: 'Chicken Pasta',
+            description: 'Grilled chicken, whole wheat pasta, tomato sauce',
+            calories: 680,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000 - 12 * 60 * 60 * 1000,
+        })
+
+        await ctx.db.insert('dietLogs', {
+            userId: client2Id,
+            mealType: 'snack',
+            title: 'Mixed Nuts',
+            description: 'Almonds, cashews, walnuts',
+            calories: 320,
+            createdAt: now - 1 * 24 * 60 * 60 * 1000 - 9 * 60 * 60 * 1000,
         })
 
         // Create weight logs
@@ -608,9 +864,9 @@ export const seedDatabase = mutation({
                 userMeta: 4,
                 trainingPlans: 2,
                 dietPlans: 2,
-                workoutLogs: 2,
-                workouts: 2,
-                dietLogs: 4,
+                workoutLogs: 9,
+                workouts: 9,
+                dietLogs: 18,
                 weightLogs: 10,
             },
         }

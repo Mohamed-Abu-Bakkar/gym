@@ -25,6 +25,8 @@ import { Route as AppUserGalleryRouteImport } from './routes/app/_user/gallery'
 import { Route as AppUserDietLogsRouteImport } from './routes/app/_user/diet-logs'
 import { Route as AppUserDashboardRouteImport } from './routes/app/_user/dashboard'
 import { Route as AppUserAccountRouteImport } from './routes/app/_user/account'
+import { Route as AppManagementSuperadminRouteRouteImport } from './routes/app/management/superadmin/route'
+import { Route as AppManagementSuperadminIndexRouteImport } from './routes/app/management/superadmin/index'
 import { Route as AppManagementProgramsIndexRouteImport } from './routes/app/management/programs/index'
 import { Route as AppManagementDietPlansIndexRouteImport } from './routes/app/management/diet-plans/index'
 import { Route as AppManagementClientsIndexRouteImport } from './routes/app/management/clients/index'
@@ -115,6 +117,18 @@ const AppUserAccountRoute = AppUserAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AppUserRoute,
 } as any)
+const AppManagementSuperadminRouteRoute =
+  AppManagementSuperadminRouteRouteImport.update({
+    id: '/superadmin',
+    path: '/superadmin',
+    getParentRoute: () => AppManagementRouteRoute,
+  } as any)
+const AppManagementSuperadminIndexRoute =
+  AppManagementSuperadminIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppManagementSuperadminRouteRoute,
+  } as any)
 const AppManagementProgramsIndexRoute =
   AppManagementProgramsIndexRouteImport.update({
     id: '/programs/',
@@ -170,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppUserRouteWithChildren
   '/app/sign-in': typeof AppSignInRoute
   '/api/': typeof ApiIndexRoute
+  '/app/management/superadmin': typeof AppManagementSuperadminRouteRouteWithChildren
   '/app/account': typeof AppUserAccountRoute
   '/app/dashboard': typeof AppUserDashboardRoute
   '/app/diet-logs': typeof AppUserDietLogsRoute
@@ -189,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/app/management/clients/': typeof AppManagementClientsIndexRoute
   '/app/management/diet-plans/': typeof AppManagementDietPlansIndexRoute
   '/app/management/programs/': typeof AppManagementProgramsIndexRoute
+  '/app/management/superadmin/': typeof AppManagementSuperadminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -213,6 +229,7 @@ export interface FileRoutesByTo {
   '/app/management/clients': typeof AppManagementClientsIndexRoute
   '/app/management/diet-plans': typeof AppManagementDietPlansIndexRoute
   '/app/management/programs': typeof AppManagementProgramsIndexRoute
+  '/app/management/superadmin': typeof AppManagementSuperadminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -221,6 +238,7 @@ export interface FileRoutesById {
   '/app/_user': typeof AppUserRouteWithChildren
   '/app/sign-in': typeof AppSignInRoute
   '/api/': typeof ApiIndexRoute
+  '/app/management/superadmin': typeof AppManagementSuperadminRouteRouteWithChildren
   '/app/_user/account': typeof AppUserAccountRoute
   '/app/_user/dashboard': typeof AppUserDashboardRoute
   '/app/_user/diet-logs': typeof AppUserDietLogsRoute
@@ -240,6 +258,7 @@ export interface FileRoutesById {
   '/app/management/clients/': typeof AppManagementClientsIndexRoute
   '/app/management/diet-plans/': typeof AppManagementDietPlansIndexRoute
   '/app/management/programs/': typeof AppManagementProgramsIndexRoute
+  '/app/management/superadmin/': typeof AppManagementSuperadminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -249,6 +268,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/sign-in'
     | '/api/'
+    | '/app/management/superadmin'
     | '/app/account'
     | '/app/dashboard'
     | '/app/diet-logs'
@@ -268,6 +288,7 @@ export interface FileRouteTypes {
     | '/app/management/clients/'
     | '/app/management/diet-plans/'
     | '/app/management/programs/'
+    | '/app/management/superadmin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -292,6 +313,7 @@ export interface FileRouteTypes {
     | '/app/management/clients'
     | '/app/management/diet-plans'
     | '/app/management/programs'
+    | '/app/management/superadmin'
   id:
     | '__root__'
     | '/'
@@ -299,6 +321,7 @@ export interface FileRouteTypes {
     | '/app/_user'
     | '/app/sign-in'
     | '/api/'
+    | '/app/management/superadmin'
     | '/app/_user/account'
     | '/app/_user/dashboard'
     | '/app/_user/diet-logs'
@@ -318,6 +341,7 @@ export interface FileRouteTypes {
     | '/app/management/clients/'
     | '/app/management/diet-plans/'
     | '/app/management/programs/'
+    | '/app/management/superadmin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -442,6 +466,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserAccountRouteImport
       parentRoute: typeof AppUserRoute
     }
+    '/app/management/superadmin': {
+      id: '/app/management/superadmin'
+      path: '/superadmin'
+      fullPath: '/app/management/superadmin'
+      preLoaderRoute: typeof AppManagementSuperadminRouteRouteImport
+      parentRoute: typeof AppManagementRouteRoute
+    }
+    '/app/management/superadmin/': {
+      id: '/app/management/superadmin/'
+      path: '/'
+      fullPath: '/app/management/superadmin/'
+      preLoaderRoute: typeof AppManagementSuperadminIndexRouteImport
+      parentRoute: typeof AppManagementSuperadminRouteRoute
+    }
     '/app/management/programs/': {
       id: '/app/management/programs/'
       path: '/programs'
@@ -501,7 +539,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppManagementSuperadminRouteRouteChildren {
+  AppManagementSuperadminIndexRoute: typeof AppManagementSuperadminIndexRoute
+}
+
+const AppManagementSuperadminRouteRouteChildren: AppManagementSuperadminRouteRouteChildren =
+  {
+    AppManagementSuperadminIndexRoute: AppManagementSuperadminIndexRoute,
+  }
+
+const AppManagementSuperadminRouteRouteWithChildren =
+  AppManagementSuperadminRouteRoute._addFileChildren(
+    AppManagementSuperadminRouteRouteChildren,
+  )
+
 interface AppManagementRouteRouteChildren {
+  AppManagementSuperadminRouteRoute: typeof AppManagementSuperadminRouteRouteWithChildren
   AppManagementTestIntegrationRoute: typeof AppManagementTestIntegrationRoute
   AppManagementIndexRoute: typeof AppManagementIndexRoute
   AppManagementClientsClientIdRoute: typeof AppManagementClientsClientIdRoute
@@ -515,6 +568,8 @@ interface AppManagementRouteRouteChildren {
 }
 
 const AppManagementRouteRouteChildren: AppManagementRouteRouteChildren = {
+  AppManagementSuperadminRouteRoute:
+    AppManagementSuperadminRouteRouteWithChildren,
   AppManagementTestIntegrationRoute: AppManagementTestIntegrationRoute,
   AppManagementIndexRoute: AppManagementIndexRoute,
   AppManagementClientsClientIdRoute: AppManagementClientsClientIdRoute,
