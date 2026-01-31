@@ -29,6 +29,7 @@ import { Route as AppManagementClientsIndexRouteImport } from './routes/app/mana
 import { Route as AppManagementProgramsNewRouteImport } from './routes/app/management/programs/new'
 import { Route as AppManagementProgramsProgramIdRouteImport } from './routes/app/management/programs/$programId'
 import { Route as AppManagementClientsClientIdRouteImport } from './routes/app/management/clients/$clientId'
+import { Route as AppUserDietPlansNewRouteImport } from './routes/app/_user/diet-plans/new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -135,6 +136,11 @@ const AppManagementClientsClientIdRoute =
     path: '/clients/$clientId',
     getParentRoute: () => AppManagementRouteRoute,
   } as any)
+const AppUserDietPlansNewRoute = AppUserDietPlansNewRouteImport.update({
+  id: '/diet-plans/new',
+  path: '/diet-plans/new',
+  getParentRoute: () => AppUserRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/app/workouts': typeof AppUserWorkoutsRoute
   '/app/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
+  '/app/diet-plans/new': typeof AppUserDietPlansNewRoute
   '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
   '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
   '/app/management/programs/new': typeof AppManagementProgramsNewRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/app/workouts': typeof AppUserWorkoutsRoute
   '/app': typeof AppUserIndexRoute
   '/app/management': typeof AppManagementIndexRoute
+  '/app/diet-plans/new': typeof AppUserDietPlansNewRoute
   '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
   '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
   '/app/management/programs/new': typeof AppManagementProgramsNewRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/app/_user/workouts': typeof AppUserWorkoutsRoute
   '/app/_user/': typeof AppUserIndexRoute
   '/app/management/': typeof AppManagementIndexRoute
+  '/app/_user/diet-plans/new': typeof AppUserDietPlansNewRoute
   '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
   '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
   '/app/management/programs/new': typeof AppManagementProgramsNewRoute
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/app/workouts'
     | '/app/'
     | '/app/management/'
+    | '/app/diet-plans/new'
     | '/app/management/clients/$clientId'
     | '/app/management/programs/$programId'
     | '/app/management/programs/new'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/app/workouts'
     | '/app'
     | '/app/management'
+    | '/app/diet-plans/new'
     | '/app/management/clients/$clientId'
     | '/app/management/programs/$programId'
     | '/app/management/programs/new'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/app/_user/workouts'
     | '/app/_user/'
     | '/app/management/'
+    | '/app/_user/diet-plans/new'
     | '/app/management/clients/$clientId'
     | '/app/management/programs/$programId'
     | '/app/management/programs/new'
@@ -418,6 +430,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppManagementClientsClientIdRouteImport
       parentRoute: typeof AppManagementRouteRoute
     }
+    '/app/_user/diet-plans/new': {
+      id: '/app/_user/diet-plans/new'
+      path: '/diet-plans/new'
+      fullPath: '/app/diet-plans/new'
+      preLoaderRoute: typeof AppUserDietPlansNewRouteImport
+      parentRoute: typeof AppUserRoute
+    }
   }
 }
 
@@ -452,6 +471,7 @@ interface AppUserRouteChildren {
   AppUserWorkoutSessionRoute: typeof AppUserWorkoutSessionRoute
   AppUserWorkoutsRoute: typeof AppUserWorkoutsRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
+  AppUserDietPlansNewRoute: typeof AppUserDietPlansNewRoute
 }
 
 const AppUserRouteChildren: AppUserRouteChildren = {
@@ -464,6 +484,7 @@ const AppUserRouteChildren: AppUserRouteChildren = {
   AppUserWorkoutSessionRoute: AppUserWorkoutSessionRoute,
   AppUserWorkoutsRoute: AppUserWorkoutsRoute,
   AppUserIndexRoute: AppUserIndexRoute,
+  AppUserDietPlansNewRoute: AppUserDietPlansNewRoute,
 }
 
 const AppUserRouteWithChildren =

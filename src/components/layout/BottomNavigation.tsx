@@ -1,6 +1,13 @@
 import * as React from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
-import { Home, Dumbbell, Plus, FileText, User } from 'lucide-react'
+import {
+  Home,
+  Dumbbell,
+  Plus,
+  FileText,
+  User,
+  UtensilsCrossed,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -109,6 +116,24 @@ export function BottomNavigation() {
                   <div className="font-semibold">Start New Workout</div>
                   <div className="text-sm text-muted-foreground">
                     Begin today's training
+                  </div>
+                </div>
+              </Button>
+            </Link>
+
+            <Link to="/app/diet-plans/new">
+              <Button
+                variant="outline"
+                className="w-full h-16 text-lg justify-start gap-4"
+                onClick={() => setDrawerOpen(false)}
+              >
+                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                  <UtensilsCrossed className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold">Create Diet Plan</div>
+                  <div className="text-sm text-muted-foreground">
+                    Build a multi-day template
                   </div>
                 </div>
               </Button>
