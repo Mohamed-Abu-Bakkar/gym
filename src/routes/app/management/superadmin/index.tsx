@@ -63,7 +63,9 @@ function SuperAdminDashboard() {
   const [newClientName, setNewClientName] = useState('')
   const [newClientPhone, setNewClientPhone] = useState('')
   const [newClientPin, setNewClientPin] = useState('')
-  const [newClientRole, setNewClientRole] = useState<string>('trainerManagedCustomer')
+  const [newClientRole, setNewClientRole] = useState<string>(
+    'trainerManagedCustomer',
+  )
   const [newClientGoal, setNewClientGoal] = useState<string>('generalFitness')
   const [selectedTrainerId, setSelectedTrainerId] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -75,13 +77,14 @@ function SuperAdminDashboard() {
   const createUser = useMutation(api.users.createUser)
 
   // Filter clients and trainers
-  const clients = allUsers?.filter(
-    (u) => u.role === 'trainerManagedCustomer' || u.role === 'selfManagedCustomer'
-  ) ?? []
-  
-  const trainers = allUsers?.filter(
-    (u) => u.role === 'trainer' || u.role === 'admin'
-  ) ?? []
+  const clients =
+    allUsers?.filter(
+      (u) =>
+        u.role === 'trainerManagedCustomer' || u.role === 'selfManagedCustomer',
+    ) ?? []
+
+  const trainers =
+    allUsers?.filter((u) => u.role === 'trainer' || u.role === 'admin') ?? []
 
   useEffect(() => {
     if (isLoading) return
@@ -99,7 +102,9 @@ function SuperAdminDashboard() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">
-        <p className="text-sm tracking-[0.3em] uppercase">Loading super admin...</p>
+        <p className="text-sm tracking-[0.3em] uppercase">
+          Loading super admin...
+        </p>
       </div>
     )
   }
@@ -128,9 +133,18 @@ function SuperAdminDashboard() {
         name: newClientName,
         phoneNumber: newClientPhone,
         pin: newClientPin,
-        role: newClientRole as 'trainerManagedCustomer' | 'selfManagedCustomer' | 'trainer' | 'admin',
-        goal: newClientGoal as 'weightLoss' | 'muscleGain' | 'endurance' | 'flexibility' | 'generalFitness',
-        trainerId: selectedTrainerId ? selectedTrainerId as any : undefined,
+        role: newClientRole as
+          | 'trainerManagedCustomer'
+          | 'selfManagedCustomer'
+          | 'trainer'
+          | 'admin',
+        goal: newClientGoal as
+          | 'weightLoss'
+          | 'muscleGain'
+          | 'endurance'
+          | 'flexibility'
+          | 'generalFitness',
+        trainerId: selectedTrainerId ? (selectedTrainerId as any) : undefined,
       })
 
       // Reset form
@@ -175,7 +189,7 @@ function SuperAdminDashboard() {
               'flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors border-b-2',
               activeTab === 'clients'
                 ? 'border-primary text-primary bg-background'
-                : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50',
             )}
           >
             <Users className="w-4 h-4" />
@@ -204,7 +218,7 @@ function SuperAdminDashboard() {
               'flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors border-b-2',
               activeTab === 'trainers'
                 ? 'border-primary text-primary bg-background'
-                : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50',
             )}
           >
             <Dumbbell className="w-4 h-4" />
@@ -233,7 +247,7 @@ function SuperAdminDashboard() {
               Add a new client or trainer to the system
             </DrawerDescription>
           </DrawerHeader>
-          
+
           <div className="flex flex-col gap-4 p-4">
             {/* Name */}
             <div className="space-y-2">
@@ -284,8 +298,12 @@ function SuperAdminDashboard() {
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="trainerManagedCustomer">Client (Trainer Managed)</SelectItem>
-                  <SelectItem value="selfManagedCustomer">Client (Self Managed)</SelectItem>
+                  <SelectItem value="trainerManagedCustomer">
+                    Client (Trainer Managed)
+                  </SelectItem>
+                  <SelectItem value="selfManagedCustomer">
+                    Client (Self Managed)
+                  </SelectItem>
                   <SelectItem value="trainer">Trainer</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
@@ -307,19 +325,24 @@ function SuperAdminDashboard() {
                   <SelectItem value="muscleGain">Muscle Gain</SelectItem>
                   <SelectItem value="endurance">Endurance</SelectItem>
                   <SelectItem value="flexibility">Flexibility</SelectItem>
-                  <SelectItem value="generalFitness">General Fitness</SelectItem>
+                  <SelectItem value="generalFitness">
+                    General Fitness
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Assign Trainer (for clients) */}
-            {(newClientRole === 'trainerManagedCustomer') && (
+            {newClientRole === 'trainerManagedCustomer' && (
               <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <Dumbbell className="w-4 h-4 text-muted-foreground" />
                   Assign Trainer
                 </label>
-                <Select value={selectedTrainerId} onValueChange={setSelectedTrainerId}>
+                <Select
+                  value={selectedTrainerId}
+                  onValueChange={setSelectedTrainerId}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select trainer" />
                   </SelectTrigger>
@@ -336,9 +359,14 @@ function SuperAdminDashboard() {
           </div>
 
           <DrawerFooter>
-            <Button 
+            <Button
               onClick={handleOnboardClient}
-              disabled={!newClientName || !newClientPhone || !newClientPin || isSubmitting}
+              disabled={
+                !newClientName ||
+                !newClientPhone ||
+                !newClientPin ||
+                isSubmitting
+              }
             >
               {isSubmitting ? 'Creating...' : 'Create User'}
             </Button>
@@ -400,7 +428,10 @@ function ClientsView({ clients, trainers }: ClientsViewProps) {
               </div>
               <div>
                 <p className="text-2xl font-bold">
-                  {clients.filter((c) => c.role === 'trainerManagedCustomer').length}
+                  {
+                    clients.filter((c) => c.role === 'trainerManagedCustomer')
+                      .length
+                  }
                 </p>
                 <p className="text-xs text-muted-foreground">Trainer Managed</p>
               </div>
@@ -500,7 +531,9 @@ function TrainersView({ trainers, clientCount }: TrainersViewProps) {
                     ? (clientCount / trainers.length).toFixed(1)
                     : '0'}
                 </p>
-                <p className="text-xs text-muted-foreground">Avg Clients/Trainer</p>
+                <p className="text-xs text-muted-foreground">
+                  Avg Clients/Trainer
+                </p>
               </div>
             </div>
           </CardContent>
@@ -542,7 +575,7 @@ function TrainersView({ trainers, clientCount }: TrainersViewProps) {
                       'text-xs px-2 py-1 rounded-full capitalize',
                       trainer.role === 'admin'
                         ? 'bg-amber-500/10 text-amber-600'
-                        : 'bg-purple-500/10 text-purple-600'
+                        : 'bg-purple-500/10 text-purple-600',
                     )}
                   >
                     {trainer.role}

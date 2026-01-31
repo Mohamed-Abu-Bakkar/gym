@@ -115,7 +115,9 @@ function RouteComponent() {
                   <div className="text-2xl font-bold">
                     {formatDuration(workoutStats.totalDuration)}
                   </div>
-                  <div className="text-xs text-muted-foreground">Total Time</div>
+                  <div className="text-xs text-muted-foreground">
+                    Total Time
+                  </div>
                 </div>
               </div>
             )}
