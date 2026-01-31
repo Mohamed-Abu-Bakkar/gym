@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   User,
   Bell,
@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Mail,
   Phone,
+  Camera,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -57,28 +58,42 @@ function RouteComponent() {
         </CardContent>
       </Card>
 
-      {/* Stats Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Stats</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold">24</div>
-              <div className="text-xs text-muted-foreground">Workouts</div>
+      {/* Stats and Gallery */}
+      <div className="grid grid-cols-2 gap-4">
+        {/* Stats Summary */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Stats</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold">24</div>
+                <div className="text-xs text-muted-foreground">Workouts</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">18h</div>
+                <div className="text-xs text-muted-foreground">Total Time</div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">18h</div>
-              <div className="text-xs text-muted-foreground">Total Time</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">6.2k</div>
-              <div className="text-xs text-muted-foreground">Calories</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        {/* Gallery Card */}
+        <Link to="/app/gallery" className="block">
+          <Card className="h-full hover:bg-muted/50 transition-colors cursor-pointer">
+            <CardHeader>
+              <CardTitle>Gallery</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center">
+              <Camera className="w-12 h-12 text-primary mb-2" />
+              <p className="text-sm text-muted-foreground text-center">
+                View Photos
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
 
       {/* Settings */}
       <Card>
