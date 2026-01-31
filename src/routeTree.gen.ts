@@ -25,6 +25,7 @@ import { Route as AppUserDashboardRouteImport } from './routes/app/_user/dashboa
 import { Route as AppUserAccountRouteImport } from './routes/app/_user/account'
 import { Route as AppManagementProgramsIndexRouteImport } from './routes/app/management/programs/index'
 import { Route as AppManagementClientsIndexRouteImport } from './routes/app/management/clients/index'
+import { Route as AppManagementProgramsNewRouteImport } from './routes/app/management/programs/new'
 import { Route as AppManagementProgramsProgramIdRouteImport } from './routes/app/management/programs/$programId'
 import { Route as AppManagementClientsClientIdRouteImport } from './routes/app/management/clients/$clientId'
 
@@ -110,6 +111,12 @@ const AppManagementClientsIndexRoute =
     path: '/clients/',
     getParentRoute: () => AppManagementRouteRoute,
   } as any)
+const AppManagementProgramsNewRoute =
+  AppManagementProgramsNewRouteImport.update({
+    id: '/programs/new',
+    path: '/programs/new',
+    getParentRoute: () => AppManagementRouteRoute,
+  } as any)
 const AppManagementProgramsProgramIdRoute =
   AppManagementProgramsProgramIdRouteImport.update({
     id: '/programs/$programId',
@@ -140,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/app/management/': typeof AppManagementIndexRoute
   '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
   '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
+  '/app/management/programs/new': typeof AppManagementProgramsNewRoute
   '/app/management/clients/': typeof AppManagementClientsIndexRoute
   '/app/management/programs/': typeof AppManagementProgramsIndexRoute
 }
@@ -158,6 +166,7 @@ export interface FileRoutesByTo {
   '/app/management': typeof AppManagementIndexRoute
   '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
   '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
+  '/app/management/programs/new': typeof AppManagementProgramsNewRoute
   '/app/management/clients': typeof AppManagementClientsIndexRoute
   '/app/management/programs': typeof AppManagementProgramsIndexRoute
 }
@@ -179,6 +188,7 @@ export interface FileRoutesById {
   '/app/management/': typeof AppManagementIndexRoute
   '/app/management/clients/$clientId': typeof AppManagementClientsClientIdRoute
   '/app/management/programs/$programId': typeof AppManagementProgramsProgramIdRoute
+  '/app/management/programs/new': typeof AppManagementProgramsNewRoute
   '/app/management/clients/': typeof AppManagementClientsIndexRoute
   '/app/management/programs/': typeof AppManagementProgramsIndexRoute
 }
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/app/management/'
     | '/app/management/clients/$clientId'
     | '/app/management/programs/$programId'
+    | '/app/management/programs/new'
     | '/app/management/clients/'
     | '/app/management/programs/'
   fileRoutesByTo: FileRoutesByTo
@@ -219,6 +230,7 @@ export interface FileRouteTypes {
     | '/app/management'
     | '/app/management/clients/$clientId'
     | '/app/management/programs/$programId'
+    | '/app/management/programs/new'
     | '/app/management/clients'
     | '/app/management/programs'
   id:
@@ -239,6 +251,7 @@ export interface FileRouteTypes {
     | '/app/management/'
     | '/app/management/clients/$clientId'
     | '/app/management/programs/$programId'
+    | '/app/management/programs/new'
     | '/app/management/clients/'
     | '/app/management/programs/'
   fileRoutesById: FileRoutesById
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppManagementClientsIndexRouteImport
       parentRoute: typeof AppManagementRouteRoute
     }
+    '/app/management/programs/new': {
+      id: '/app/management/programs/new'
+      path: '/programs/new'
+      fullPath: '/app/management/programs/new'
+      preLoaderRoute: typeof AppManagementProgramsNewRouteImport
+      parentRoute: typeof AppManagementRouteRoute
+    }
     '/app/management/programs/$programId': {
       id: '/app/management/programs/$programId'
       path: '/programs/$programId'
@@ -386,6 +406,7 @@ interface AppManagementRouteRouteChildren {
   AppManagementIndexRoute: typeof AppManagementIndexRoute
   AppManagementClientsClientIdRoute: typeof AppManagementClientsClientIdRoute
   AppManagementProgramsProgramIdRoute: typeof AppManagementProgramsProgramIdRoute
+  AppManagementProgramsNewRoute: typeof AppManagementProgramsNewRoute
   AppManagementClientsIndexRoute: typeof AppManagementClientsIndexRoute
   AppManagementProgramsIndexRoute: typeof AppManagementProgramsIndexRoute
 }
@@ -394,6 +415,7 @@ const AppManagementRouteRouteChildren: AppManagementRouteRouteChildren = {
   AppManagementIndexRoute: AppManagementIndexRoute,
   AppManagementClientsClientIdRoute: AppManagementClientsClientIdRoute,
   AppManagementProgramsProgramIdRoute: AppManagementProgramsProgramIdRoute,
+  AppManagementProgramsNewRoute: AppManagementProgramsNewRoute,
   AppManagementClientsIndexRoute: AppManagementClientsIndexRoute,
   AppManagementProgramsIndexRoute: AppManagementProgramsIndexRoute,
 }

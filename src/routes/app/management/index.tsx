@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import {
   // Activity,
@@ -9,10 +9,6 @@ import {
   // Phone,
   // ShieldCheck,
   TrendingUp,
-  ChevronLeft,
-  Plus,
-  Trash2,
-  X,
 } from 'lucide-react'
 // import type { LucideIcon } from 'lucide-react'
 
@@ -26,13 +22,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer'
 import type {
   TrainerDashboardData,
   // TrainerQuickActionKey,
@@ -57,55 +46,6 @@ export const Route = createFileRoute('/app/management/')({
 
 type ClientRosterKey = keyof TrainerDashboardData['clients']
 
-type DayOfWeek = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
-
-type ExerciseSet = {
-  reps?: number
-  weight?: number
-  notes?: string
-}
-
-type Exercise = {
-  exerciseName: string
-  noOfSets: number
-  sets: ExerciseSet[]
-}
-
-type DayWorkout = {
-  day: DayOfWeek
-  exercises: Exercise[]
-}
-
-type ProgramFormData = {
-  name: string
-  description: string
-  durationWeeks: number
-  days: DayWorkout[]
-}
-
-const DAYS_OF_WEEK: { value: DayOfWeek; label: string }[] = [
-  { value: 'mon', label: 'Monday' },
-  { value: 'tue', label: 'Tuesday' },
-  { value: 'wed', label: 'Wednesday' },
-  { value: 'thu', label: 'Thursday' },
-  { value: 'fri', label: 'Friday' },
-  { value: 'sat', label: 'Saturday' },
-  { value: 'sun', label: 'Sunday' },
-]
-
-const EXERCISE_NAMES = [
-  'Barbell Bench Press',
-  'Incline Dumbbell Press',
-  'Lat Pulldown',
-  'Seated Cable Row',
-  'Barbell Squat',
-  'Leg Press',
-  'Barbell Curl',
-  'Cable Triceps Pushdown',
-  'Plank',
-  'Russian Twist',
-]
-
 function RouteComponent() {
   const { user, isLoading } = useAuth()
   const navigate = useNavigate()
@@ -125,97 +65,8 @@ function RouteComponent() {
     clientPatterns,
     getWeightTrend,
   } = useTrainerManagement()
-  
-  const [programDrawerOpen, setProgramDrawerOpen] = useState(false)
-  const [formStep, setFormStep] = useState(1)
-  const [programForm, setProgramForm] = useState<ProgramFormData>({
-    name: '',
-    description: '',
-    durationWeeks: 4,
-    days: [],
-  })
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek | null>(null)
+
   const availableClients = [...clients.active, ...clients.flagged]
-
-  const openProgramDrawer = () => {
-    setProgramForm({
-      name: '',
-      description: '',
-      durationWeeks: 4,
-      days: [],
-    })
-    setFormStep(1)
-    setSelectedDay(null)
-    setProgramDrawerOpen(true)
-  }
-
-  const handleProgramSubmit = () => {
-    console.log('Program created:', programForm)
-    // TODO: Save to convex
-    setProgramDrawerOpen(false)
-  }
-
-  const addDayToProgram = (day: DayOfWeek) => {
-    if (programForm.days.some(d => d.day === day)) return
-    setProgramForm(prev => ({
-      ...prev,
-      days: [...prev.days, { day, exercises: [] }]
-    }))
-  }
-
-  const removeDayFromProgram = (day: DayOfWeek) => {
-    setProgramForm(prev => ({
-      ...prev,
-      days: prev.days.filter(d => d.day !== day)
-    }))
-  }
-
-  const addExerciseToDay = (day: DayOfWeek) => {
-    setProgramForm(prev => ({
-      ...prev,
-      days: prev.days.map(d => 
-        d.day === day 
-          ? { 
-              ...d, 
-              exercises: [...d.exercises, { 
-                exerciseName: EXERCISE_NAMES[0], 
-                noOfSets: 3, 
-                sets: [{ reps: 10, weight: 0 }, { reps: 10, weight: 0 }, { reps: 10, weight: 0 }] 
-              }] 
-            }
-          : d
-      )
-    }))
-  }
-
-  const removeExerciseFromDay = (day: DayOfWeek, exerciseIndex: number) => {
-    setProgramForm(prev => ({
-      ...prev,
-      days: prev.days.map(d => 
-        d.day === day 
-          ? { ...d, exercises: d.exercises.filter((_, i) => i !== exerciseIndex) }
-          : d
-      )
-    }))
-  }
-
-  const updateExercise = (day: DayOfWeek, exerciseIndex: number, field: string, value: any) => {
-    setProgramForm(prev => ({
-      ...prev,
-      days: prev.days.map(d => 
-        d.day === day 
-          ? {
-              ...d,
-              exercises: d.exercises.map((ex, i) => 
-                i === exerciseIndex 
-                  ? { ...ex, [field]: value }
-                  : ex
-              )
-            }
-          : d
-      )
-    }))
-  }
 
   useEffect(() => {
     if (isLoading) return
@@ -286,7 +137,10 @@ function RouteComponent() {
               <CheckCircle2 className="h-4 w-4" />
               Clear check-ins
             </Button>
-            <Button size="sm" onClick={openProgramDrawer}>
+            <Button
+              size="sm"
+              onClick={() => navigate({ to: '/app/management/programs/new' })}
+            >
               <TrendingUp className="h-4 w-4" />
               New Program
             </Button>
@@ -557,240 +411,6 @@ function RouteComponent() {
             ))}
           </CardContent>
         </Card> */}
-
-      <Drawer open={programDrawerOpen} onOpenChange={setProgramDrawerOpen}>
-        <DrawerContent className="max-h-[90vh]">
-          <DrawerHeader>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-4"
-              onClick={() => setProgramDrawerOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-            <DrawerTitle>Create Training Program</DrawerTitle>
-            <DrawerDescription>
-              Step {formStep} of 4 - Build a comprehensive workout program
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <div className="px-6 pb-6 overflow-y-auto">
-            {/* Step 1: Basic Info */}
-            {formStep === 1 && (
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium">Program Name</label>
-                  <input
-                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
-                    placeholder="e.g., Strength Builder 12-Week"
-                    value={programForm.name}
-                    onChange={(e) => setProgramForm(prev => ({ ...prev, name: e.target.value }))}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Description</label>
-                  <textarea
-                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
-                    rows={4}
-                    placeholder="Describe the program goals and approach..."
-                    value={programForm.description}
-                    onChange={(e) => setProgramForm(prev => ({ ...prev, description: e.target.value }))}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Duration (Weeks)</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="52"
-                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
-                    value={programForm.durationWeeks}
-                    onChange={(e) => setProgramForm(prev => ({ ...prev, durationWeeks: parseInt(e.target.value) || 1 }))}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Select Days */}
-            {formStep === 2 && (
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">Select training days for this program</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {DAYS_OF_WEEK.map((day) => {
-                    const isSelected = programForm.days.some(d => d.day === day.value)
-                    return (
-                      <button
-                        key={day.value}
-                        type="button"
-                        onClick={() => isSelected ? removeDayFromProgram(day.value) : addDayToProgram(day.value)}
-                        className={`p-4 rounded-lg border-2 transition ${
-                          isSelected 
-                            ? 'border-primary bg-primary/10' 
-                            : 'border-border hover:border-primary/50'
-                        }`}
-                      >
-                        <div className="font-medium">{day.label}</div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {isSelected ? `${programForm.days.find(d => d.day === day.value)?.exercises.length || 0} exercises` : 'Tap to add'}
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Add Exercises */}
-            {formStep === 3 && (
-              <div className="space-y-4">
-                {programForm.days.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No training days selected. Go back to add days.
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex gap-2 overflow-x-auto pb-2">
-                      {programForm.days.map((day) => (
-                        <button
-                          key={day.day}
-                          type="button"
-                          onClick={() => setSelectedDay(day.day)}
-                          className={`px-4 py-2 rounded-lg whitespace-nowrap transition ${
-                            selectedDay === day.day
-                              ? 'bg-primary text-primary-foreground'
-                              : 'bg-muted hover:bg-muted/80'
-                          }`}
-                        >
-                          {DAYS_OF_WEEK.find(d => d.value === day.day)?.label}
-                        </button>
-                      ))}
-                    </div>
-
-                    {selectedDay && (
-                      <div className="space-y-3">
-                        {programForm.days.find(d => d.day === selectedDay)?.exercises.map((exercise, index) => (
-                          <div key={index} className="p-4 rounded-lg border bg-muted/30 space-y-3">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex-1">
-                                <label className="text-xs font-medium">Exercise</label>
-                                <select
-                                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
-                                  value={exercise.exerciseName}
-                                  onChange={(e) => updateExercise(selectedDay, index, 'exerciseName', e.target.value)}
-                                >
-                                  {EXERCISE_NAMES.map(name => (
-                                    <option key={name} value={name}>{name}</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
-                                onClick={() => removeExerciseFromDay(selectedDay, index)}
-                              >
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                              </Button>
-                            </div>
-                            <div className="grid grid-cols-3 gap-2">
-                              <div>
-                                <label className="text-xs font-medium">Sets</label>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
-                                  value={exercise.noOfSets}
-                                  onChange={(e) => updateExercise(selectedDay, index, 'noOfSets', parseInt(e.target.value) || 1)}
-                                />
-                              </div>
-                              <div>
-                                <label className="text-xs font-medium">Reps</label>
-                                <input
-                                  type="number"
-                                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
-                                  value={exercise.sets[0]?.reps || 0}
-                                  placeholder="10"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-xs font-medium">Weight (kg)</label>
-                                <input
-                                  type="number"
-                                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
-                                  value={exercise.sets[0]?.weight || 0}
-                                  placeholder="0"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                        <Button
-                          variant="outline"
-                          className="w-full"
-                          onClick={() => addExerciseToDay(selectedDay)}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Exercise
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Step 4: Review */}
-            {formStep === 4 && (
-              <div className="space-y-4">
-                <div className="p-4 rounded-lg bg-muted/30">
-                  <h3 className="font-semibold">{programForm.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{programForm.description}</p>
-                  <p className="text-sm text-muted-foreground mt-2">Duration: {programForm.durationWeeks} weeks</p>
-                </div>
-                <div className="space-y-3">
-                  {programForm.days.map((day) => (
-                    <div key={day.day} className="p-4 rounded-lg border">
-                      <h4 className="font-medium">{DAYS_OF_WEEK.find(d => d.value === day.day)?.label}</h4>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {day.exercises.length} exercises
-                      </p>
-                      <ul className="text-sm mt-2 space-y-1">
-                        {day.exercises.map((ex, i) => (
-                          <li key={i} className="text-muted-foreground">
-                            • {ex.exerciseName} - {ex.noOfSets} sets
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="border-t p-4 flex justify-between">
-            <Button
-              variant="outline"
-              onClick={() => setFormStep(Math.max(1, formStep - 1))}
-              disabled={formStep === 1}
-            >
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-            {formStep < 4 ? (
-              <Button onClick={() => setFormStep(formStep + 1)}>
-                Next
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </Button>
-            ) : (
-              <Button onClick={handleProgramSubmit}>
-                Create Program
-              </Button>
-            )}
-          </div>
-        </DrawerContent>
-      </Drawer>
     </div>
   )
 }
