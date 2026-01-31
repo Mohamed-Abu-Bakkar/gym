@@ -106,10 +106,64 @@ function RouteComponent() {
       {/* About Section */}
       <Card>
         <CardHeader>
-          <CardTitle>About</CardTitle>
+          <CardTitle>About Us</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
-          <button className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+        <CardContent className="space-y-4">
+          {/* About Description */}
+          <div className="p-4 rounded-lg bg-muted/30">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              We are an elite fitness destination dedicated to sculpting bodies
+              and minds. Our state-of-the-art facility and expert guidance
+              ensure you surpass your limits.
+            </p>
+          </div>
+
+          {/* CEO Section */}
+          <div className="p-4 rounded-lg border bg-card">
+            <div className="flex items-start gap-4 mb-3">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <User className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">CEO Nagaraj</h3>
+                <p className="text-sm text-muted-foreground">
+                  Founder & Head Coach
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              With over 15 years of experience in strength training and
+              nutrition, Nagaraj has transformed over 500+ lives. A certified
+              master trainer and nutrition specialist dedicated to excellence.
+            </p>
+          </div>
+
+          {/* Success Stories */}
+          <div>
+            <h3 className="font-semibold mb-3">Success Stories</h3>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="aspect-square rounded-lg bg-gradient-to-br from-chart-1/20 to-chart-1/5 flex items-center justify-center border">
+                <div className="text-center p-2">
+                  <div className="text-xs font-medium">12 Week</div>
+                  <div className="text-xs text-muted-foreground">Cut</div>
+                </div>
+              </div>
+              <div className="aspect-square rounded-lg bg-gradient-to-br from-chart-2/20 to-chart-2/5 flex items-center justify-center border">
+                <div className="text-center p-2">
+                  <div className="text-xs font-medium">Muscle</div>
+                  <div className="text-xs text-muted-foreground">Gain</div>
+                </div>
+              </div>
+              <div className="aspect-square rounded-lg bg-gradient-to-br from-chart-3/20 to-chart-3/5 flex items-center justify-center border">
+                <div className="text-center p-2">
+                  <div className="text-xs font-medium">Post</div>
+                  <div className="text-xs text-muted-foreground">Pregnancy</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors border">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-chart-3/10 flex items-center justify-center">
                 <Info className="w-5 h-5 text-chart-3" />

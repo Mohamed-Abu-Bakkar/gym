@@ -23,7 +23,6 @@ import { Route as AppUserLogsRouteImport } from './routes/app/_user/logs'
 import { Route as AppUserDietLogsRouteImport } from './routes/app/_user/diet-logs'
 import { Route as AppUserDashboardRouteImport } from './routes/app/_user/dashboard'
 import { Route as AppUserAccountRouteImport } from './routes/app/_user/account'
-import { Route as AppUserAboutRouteImport } from './routes/app/_user/about'
 import { Route as AppManagementProgramsIndexRouteImport } from './routes/app/management/programs/index'
 import { Route as AppManagementClientsIndexRouteImport } from './routes/app/management/clients/index'
 import { Route as AppManagementProgramsProgramIdRouteImport } from './routes/app/management/programs/$programId'
@@ -99,11 +98,6 @@ const AppUserAccountRoute = AppUserAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AppUserRoute,
 } as any)
-const AppUserAboutRoute = AppUserAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => AppUserRoute,
-} as any)
 const AppManagementProgramsIndexRoute =
   AppManagementProgramsIndexRouteImport.update({
     id: '/programs/',
@@ -135,7 +129,6 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppUserRouteWithChildren
   '/app/sign-in': typeof AppSignInRoute
   '/api/': typeof ApiIndexRoute
-  '/app/about': typeof AppUserAboutRoute
   '/app/account': typeof AppUserAccountRoute
   '/app/dashboard': typeof AppUserDashboardRoute
   '/app/diet-logs': typeof AppUserDietLogsRoute
@@ -154,7 +147,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app/sign-in': typeof AppSignInRoute
   '/api': typeof ApiIndexRoute
-  '/app/about': typeof AppUserAboutRoute
   '/app/account': typeof AppUserAccountRoute
   '/app/dashboard': typeof AppUserDashboardRoute
   '/app/diet-logs': typeof AppUserDietLogsRoute
@@ -176,7 +168,6 @@ export interface FileRoutesById {
   '/app/_user': typeof AppUserRouteWithChildren
   '/app/sign-in': typeof AppSignInRoute
   '/api/': typeof ApiIndexRoute
-  '/app/_user/about': typeof AppUserAboutRoute
   '/app/_user/account': typeof AppUserAccountRoute
   '/app/_user/dashboard': typeof AppUserDashboardRoute
   '/app/_user/diet-logs': typeof AppUserDietLogsRoute
@@ -199,7 +190,6 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/sign-in'
     | '/api/'
-    | '/app/about'
     | '/app/account'
     | '/app/dashboard'
     | '/app/diet-logs'
@@ -218,7 +208,6 @@ export interface FileRouteTypes {
     | '/'
     | '/app/sign-in'
     | '/api'
-    | '/app/about'
     | '/app/account'
     | '/app/dashboard'
     | '/app/diet-logs'
@@ -239,7 +228,6 @@ export interface FileRouteTypes {
     | '/app/_user'
     | '/app/sign-in'
     | '/api/'
-    | '/app/_user/about'
     | '/app/_user/account'
     | '/app/_user/dashboard'
     | '/app/_user/diet-logs'
@@ -363,13 +351,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserAccountRouteImport
       parentRoute: typeof AppUserRoute
     }
-    '/app/_user/about': {
-      id: '/app/_user/about'
-      path: '/about'
-      fullPath: '/app/about'
-      preLoaderRoute: typeof AppUserAboutRouteImport
-      parentRoute: typeof AppUserRoute
-    }
     '/app/management/programs/': {
       id: '/app/management/programs/'
       path: '/programs'
@@ -421,7 +402,6 @@ const AppManagementRouteRouteWithChildren =
   AppManagementRouteRoute._addFileChildren(AppManagementRouteRouteChildren)
 
 interface AppUserRouteChildren {
-  AppUserAboutRoute: typeof AppUserAboutRoute
   AppUserAccountRoute: typeof AppUserAccountRoute
   AppUserDashboardRoute: typeof AppUserDashboardRoute
   AppUserDietLogsRoute: typeof AppUserDietLogsRoute
@@ -433,7 +413,6 @@ interface AppUserRouteChildren {
 }
 
 const AppUserRouteChildren: AppUserRouteChildren = {
-  AppUserAboutRoute: AppUserAboutRoute,
   AppUserAccountRoute: AppUserAccountRoute,
   AppUserDashboardRoute: AppUserDashboardRoute,
   AppUserDietLogsRoute: AppUserDietLogsRoute,

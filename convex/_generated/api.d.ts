@@ -10,6 +10,7 @@
 
 import type * as todos from "../todos.js";
 import type * as users from "../users.js";
+import type * as weightLogs from "../weightLogs.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +21,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   todos: typeof todos;
   users: typeof users;
+  weightLogs: typeof weightLogs;
 }>;
 
 /**

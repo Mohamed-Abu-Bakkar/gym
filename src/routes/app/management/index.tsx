@@ -9,6 +9,10 @@ import {
   // Phone,
   // ShieldCheck,
   TrendingUp,
+  ChevronLeft,
+  Plus,
+  Trash2,
+  X,
 } from 'lucide-react'
 // import type { LucideIcon } from 'lucide-react'
 
@@ -53,6 +57,55 @@ export const Route = createFileRoute('/app/management/')({
 
 type ClientRosterKey = keyof TrainerDashboardData['clients']
 
+type DayOfWeek = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
+
+type ExerciseSet = {
+  reps?: number
+  weight?: number
+  notes?: string
+}
+
+type Exercise = {
+  exerciseName: string
+  noOfSets: number
+  sets: ExerciseSet[]
+}
+
+type DayWorkout = {
+  day: DayOfWeek
+  exercises: Exercise[]
+}
+
+type ProgramFormData = {
+  name: string
+  description: string
+  durationWeeks: number
+  days: DayWorkout[]
+}
+
+const DAYS_OF_WEEK: { value: DayOfWeek; label: string }[] = [
+  { value: 'mon', label: 'Monday' },
+  { value: 'tue', label: 'Tuesday' },
+  { value: 'wed', label: 'Wednesday' },
+  { value: 'thu', label: 'Thursday' },
+  { value: 'fri', label: 'Friday' },
+  { value: 'sat', label: 'Saturday' },
+  { value: 'sun', label: 'Sunday' },
+]
+
+const EXERCISE_NAMES = [
+  'Barbell Bench Press',
+  'Incline Dumbbell Press',
+  'Lat Pulldown',
+  'Seated Cable Row',
+  'Barbell Squat',
+  'Leg Press',
+  'Barbell Curl',
+  'Cable Triceps Pushdown',
+  'Plank',
+  'Russian Twist',
+]
+
 function RouteComponent() {
   const { user, isLoading } = useAuth()
   const navigate = useNavigate()
@@ -72,88 +125,96 @@ function RouteComponent() {
     clientPatterns,
     getWeightTrend,
   } = useTrainerManagement()
-  const [blockDrawerOpen, setBlockDrawerOpen] = useState(false)
-  const [blockForm, setBlockForm] = useState({
-    clientId: '',
-    programId: '',
-    dietTitle: '',
-    dietSummary: '',
+  
+  const [programDrawerOpen, setProgramDrawerOpen] = useState(false)
+  const [formStep, setFormStep] = useState(1)
+  const [programForm, setProgramForm] = useState<ProgramFormData>({
+    name: '',
+    description: '',
+    durationWeeks: 4,
+    days: [],
   })
+  const [selectedDay, setSelectedDay] = useState<DayOfWeek | null>(null)
   const availableClients = [...clients.active, ...clients.flagged]
 
-  useEffect(() => {
-    setBlockForm((prev) => ({
-      ...prev,
-      clientId: prev.clientId || availableClients[0]?.id || '',
-      programId: prev.programId || programs[0]?.id || '',
-    }))
-  }, [availableClients, programs])
-
-  const openBlockDrawer = () => {
-    setBlockForm((prev) => ({
-      clientId: availableClients[0]?.id || '',
-      programId: programs[0]?.id || '',
-      dietTitle: prev.dietTitle,
-      dietSummary: prev.dietSummary,
-    }))
-    setBlockDrawerOpen(true)
+  const openProgramDrawer = () => {
+    setProgramForm({
+      name: '',
+      description: '',
+      durationWeeks: 4,
+      days: [],
+    })
+    setFormStep(1)
+    setSelectedDay(null)
+    setProgramDrawerOpen(true)
   }
 
-  const handleBlockSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!blockForm.clientId || !blockForm.programId) return
-    const program = programs.find((entry) => entry.id === blockForm.programId)
-    const detail = programDetails[blockForm.programId]
-    if (!program || !detail) return
-    if (!detail.dailyWorkouts?.length || !detail.dietPlan?.length) {
-      window.alert(
-        'The selected program is missing daily workouts or diet guidance. Edit the program to add them before assigning.',
+  const handleProgramSubmit = () => {
+    console.log('Program created:', programForm)
+    // TODO: Save to convex
+    setProgramDrawerOpen(false)
+  }
+
+  const addDayToProgram = (day: DayOfWeek) => {
+    if (programForm.days.some(d => d.day === day)) return
+    setProgramForm(prev => ({
+      ...prev,
+      days: [...prev.days, { day, exercises: [] }]
+    }))
+  }
+
+  const removeDayFromProgram = (day: DayOfWeek) => {
+    setProgramForm(prev => ({
+      ...prev,
+      days: prev.days.filter(d => d.day !== day)
+    }))
+  }
+
+  const addExerciseToDay = (day: DayOfWeek) => {
+    setProgramForm(prev => ({
+      ...prev,
+      days: prev.days.map(d => 
+        d.day === day 
+          ? { 
+              ...d, 
+              exercises: [...d.exercises, { 
+                exerciseName: EXERCISE_NAMES[0], 
+                noOfSets: 3, 
+                sets: [{ reps: 10, weight: 0 }, { reps: 10, weight: 0 }, { reps: 10, weight: 0 }] 
+              }] 
+            }
+          : d
       )
-      return
-    }
-    const totalWeeks = Math.max(1, program.durationWeeks)
-    const template = detail.dailyWorkouts
-    const totalTemplateDays = totalWeeks * template.length
-    const schedule = Array.from({ length: totalTemplateDays }, (_, index) => {
-      const baseDay = template[index % template.length]
-      const weekNumber = Math.floor(index / template.length) + 1
-      const detailNote =
-        baseDay.readinessCue || detail.progressionNotes || baseDay.theme
-      return {
-        day: `Week ${weekNumber} · ${baseDay.dayLabel}`,
-        focus: `${baseDay.focus} · ${baseDay.theme}`,
-        detail: detailNote,
-        diet: baseDay.nutritionCue,
-      }
-    })
-    const planTemplate = detail.dietPlan
-    const totalDietDays = totalWeeks * planTemplate.length
-    const dailyDietPlan = Array.from({ length: totalDietDays }, (_, index) => {
-      const baseDay = planTemplate[index % planTemplate.length]
-      const weekNumber = Math.floor(index / planTemplate.length) + 1
-      const mealSummary = baseDay.meals
-        .map((meal) => `${meal.title}: ${meal.description}`)
-        .join(' | ')
-      const note = baseDay.notes ? ` Note: ${baseDay.notes}` : ''
-      return {
-        day: `Week ${weekNumber} · ${baseDay.dayLabel}`,
-        guidance: `${baseDay.emphasis} • ${mealSummary} • Hydration: ${baseDay.hydration}${note}`,
-      }
-    })
-    assignWorkoutPattern(blockForm.clientId, {
-      name: program.name,
-      focus: program.focus,
-      programId: program.id,
-      schedule,
-    })
-    assignDietPlan(blockForm.clientId, {
-      title: blockForm.dietTitle || `${program.name} Fueling`,
-      summary:
-        blockForm.dietSummary || 'Pair carbs + protein before every session.',
-      photoRefs: [],
-      dailyPlan: dailyDietPlan,
-    })
-    setBlockDrawerOpen(false)
+    }))
+  }
+
+  const removeExerciseFromDay = (day: DayOfWeek, exerciseIndex: number) => {
+    setProgramForm(prev => ({
+      ...prev,
+      days: prev.days.map(d => 
+        d.day === day 
+          ? { ...d, exercises: d.exercises.filter((_, i) => i !== exerciseIndex) }
+          : d
+      )
+    }))
+  }
+
+  const updateExercise = (day: DayOfWeek, exerciseIndex: number, field: string, value: any) => {
+    setProgramForm(prev => ({
+      ...prev,
+      days: prev.days.map(d => 
+        d.day === day 
+          ? {
+              ...d,
+              exercises: d.exercises.map((ex, i) => 
+                i === exerciseIndex 
+                  ? { ...ex, [field]: value }
+                  : ex
+              )
+            }
+          : d
+      )
+    }))
   }
 
   useEffect(() => {
@@ -225,9 +286,9 @@ function RouteComponent() {
               <CheckCircle2 className="h-4 w-4" />
               Clear check-ins
             </Button>
-            <Button size="sm" onClick={openBlockDrawer}>
+            <Button size="sm" onClick={openProgramDrawer}>
               <TrendingUp className="h-4 w-4" />
-              New block
+              New Program
             </Button>
           </div>
         </div>
@@ -394,7 +455,9 @@ function RouteComponent() {
                     </p>
                     <p>
                       Weight Δ:{' '}
-                      {trend.delta !== null ? `${trend.delta} lbs` : '—'}
+                      {trend.delta !== null
+                        ? `${(trend.delta * 0.453592).toFixed(1)} kg`
+                        : '—'}
                     </p>
                   </div>
                 </div>
@@ -495,112 +558,237 @@ function RouteComponent() {
           </CardContent>
         </Card> */}
 
-      <Drawer open={blockDrawerOpen} onOpenChange={setBlockDrawerOpen}>
-        <DrawerContent>
+      <Drawer open={programDrawerOpen} onOpenChange={setProgramDrawerOpen}>
+        <DrawerContent className="max-h-[90vh]">
           <DrawerHeader>
-            <DrawerTitle>Assign new block</DrawerTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-4"
+              onClick={() => setProgramDrawerOpen(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <DrawerTitle>Create Training Program</DrawerTitle>
             <DrawerDescription>
-              Pair a program and diet brief for a specific client.
+              Step {formStep} of 4 - Build a comprehensive workout program
             </DrawerDescription>
           </DrawerHeader>
-          <form className="space-y-4 p-6" onSubmit={handleBlockSubmit}>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label
-                  className="text-sm font-medium"
-                  htmlFor="block-client-select"
-                >
-                  Client
-                </label>
-                <select
-                  id="block-client-select"
-                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-                  value={blockForm.clientId}
-                  onChange={(event) =>
-                    setBlockForm((prev) => ({
-                      ...prev,
-                      clientId: event.target.value,
-                    }))
-                  }
-                >
-                  {availableClients.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.name}
-                    </option>
-                  ))}
-                </select>
+
+          <div className="px-6 pb-6 overflow-y-auto">
+            {/* Step 1: Basic Info */}
+            {formStep === 1 && (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Program Name</label>
+                  <input
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
+                    placeholder="e.g., Strength Builder 12-Week"
+                    value={programForm.name}
+                    onChange={(e) => setProgramForm(prev => ({ ...prev, name: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Description</label>
+                  <textarea
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
+                    rows={4}
+                    placeholder="Describe the program goals and approach..."
+                    value={programForm.description}
+                    onChange={(e) => setProgramForm(prev => ({ ...prev, description: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Duration (Weeks)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="52"
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
+                    value={programForm.durationWeeks}
+                    onChange={(e) => setProgramForm(prev => ({ ...prev, durationWeeks: parseInt(e.target.value) || 1 }))}
+                  />
+                </div>
               </div>
-              <div>
-                <label
-                  className="text-sm font-medium"
-                  htmlFor="block-program-select"
-                >
-                  Program
-                </label>
-                <select
-                  id="block-program-select"
-                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-                  value={blockForm.programId}
-                  onChange={(event) =>
-                    setBlockForm((prev) => ({
-                      ...prev,
-                      programId: event.target.value,
-                    }))
-                  }
-                >
-                  {programs.map((program) => (
-                    <option key={program.id} value={program.id}>
-                      {program.name}
-                    </option>
-                  ))}
-                </select>
+            )}
+
+            {/* Step 2: Select Days */}
+            {formStep === 2 && (
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">Select training days for this program</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {DAYS_OF_WEEK.map((day) => {
+                    const isSelected = programForm.days.some(d => d.day === day.value)
+                    return (
+                      <button
+                        key={day.value}
+                        type="button"
+                        onClick={() => isSelected ? removeDayFromProgram(day.value) : addDayToProgram(day.value)}
+                        className={`p-4 rounded-lg border-2 transition ${
+                          isSelected 
+                            ? 'border-primary bg-primary/10' 
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <div className="font-medium">{day.label}</div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {isSelected ? `${programForm.days.find(d => d.day === day.value)?.exercises.length || 0} exercises` : 'Tap to add'}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium">Diet title</label>
-              <input
-                className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-                value={blockForm.dietTitle}
-                onChange={(event) =>
-                  setBlockForm((prev) => ({
-                    ...prev,
-                    dietTitle: event.target.value,
-                  }))
-                }
-                placeholder="In-season fueling"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Diet summary</label>
-              <textarea
-                className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-                rows={4}
-                value={blockForm.dietSummary}
-                onChange={(event) =>
-                  setBlockForm((prev) => ({
-                    ...prev,
-                    dietSummary: event.target.value,
-                  }))
-                }
-                placeholder="Outline macro targets, hydration, and supplement cues."
-              />
-            </div>
-            <div className="flex flex-wrap justify-end gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setBlockDrawerOpen(false)}
-              >
-                Cancel
+            )}
+
+            {/* Step 3: Add Exercises */}
+            {formStep === 3 && (
+              <div className="space-y-4">
+                {programForm.days.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No training days selected. Go back to add days.
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex gap-2 overflow-x-auto pb-2">
+                      {programForm.days.map((day) => (
+                        <button
+                          key={day.day}
+                          type="button"
+                          onClick={() => setSelectedDay(day.day)}
+                          className={`px-4 py-2 rounded-lg whitespace-nowrap transition ${
+                            selectedDay === day.day
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-muted hover:bg-muted/80'
+                          }`}
+                        >
+                          {DAYS_OF_WEEK.find(d => d.value === day.day)?.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {selectedDay && (
+                      <div className="space-y-3">
+                        {programForm.days.find(d => d.day === selectedDay)?.exercises.map((exercise, index) => (
+                          <div key={index} className="p-4 rounded-lg border bg-muted/30 space-y-3">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1">
+                                <label className="text-xs font-medium">Exercise</label>
+                                <select
+                                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
+                                  value={exercise.exerciseName}
+                                  onChange={(e) => updateExercise(selectedDay, index, 'exerciseName', e.target.value)}
+                                >
+                                  {EXERCISE_NAMES.map(name => (
+                                    <option key={name} value={name}>{name}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => removeExerciseFromDay(selectedDay, index)}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                              <div>
+                                <label className="text-xs font-medium">Sets</label>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
+                                  value={exercise.noOfSets}
+                                  onChange={(e) => updateExercise(selectedDay, index, 'noOfSets', parseInt(e.target.value) || 1)}
+                                />
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium">Reps</label>
+                                <input
+                                  type="number"
+                                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
+                                  value={exercise.sets[0]?.reps || 0}
+                                  placeholder="10"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium">Weight (kg)</label>
+                                <input
+                                  type="number"
+                                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
+                                  value={exercise.sets[0]?.weight || 0}
+                                  placeholder="0"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => addExerciseToDay(selectedDay)}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Exercise
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Step 4: Review */}
+            {formStep === 4 && (
+              <div className="space-y-4">
+                <div className="p-4 rounded-lg bg-muted/30">
+                  <h3 className="font-semibold">{programForm.name}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{programForm.description}</p>
+                  <p className="text-sm text-muted-foreground mt-2">Duration: {programForm.durationWeeks} weeks</p>
+                </div>
+                <div className="space-y-3">
+                  {programForm.days.map((day) => (
+                    <div key={day.day} className="p-4 rounded-lg border">
+                      <h4 className="font-medium">{DAYS_OF_WEEK.find(d => d.value === day.day)?.label}</h4>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {day.exercises.length} exercises
+                      </p>
+                      <ul className="text-sm mt-2 space-y-1">
+                        {day.exercises.map((ex, i) => (
+                          <li key={i} className="text-muted-foreground">
+                            • {ex.exerciseName} - {ex.noOfSets} sets
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="border-t p-4 flex justify-between">
+            <Button
+              variant="outline"
+              onClick={() => setFormStep(Math.max(1, formStep - 1))}
+              disabled={formStep === 1}
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+            {formStep < 4 ? (
+              <Button onClick={() => setFormStep(formStep + 1)}>
+                Next
+                <ChevronRight className="h-4 w-4 ml-2" />
               </Button>
-              <Button
-                type="submit"
-                disabled={!availableClients.length || !programs.length}
-              >
-                Assign block
+            ) : (
+              <Button onClick={handleProgramSubmit}>
+                Create Program
               </Button>
-            </div>
-          </form>
+            )}
+          </div>
         </DrawerContent>
       </Drawer>
     </div>

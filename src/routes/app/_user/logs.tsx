@@ -184,7 +184,7 @@ function RouteComponent() {
                   <div className="text-4xl font-bold">
                     {MOCK_WEIGHT_LOGS[0].weight}
                   </div>
-                  <div className="text-sm text-muted-foreground">lbs</div>
+                  <div className="text-sm text-muted-foreground">kg</div>
 
                   {/* Progress indicator */}
                   <div className="mt-6 p-4 rounded-lg bg-muted/50">
@@ -193,15 +193,15 @@ function RouteComponent() {
                         <div className="text-sm text-muted-foreground">
                           Target Weight
                         </div>
-                        <div className="text-xl font-semibold">175 lbs</div>
+                        <div className="text-xl font-semibold">175 kg</div>
                       </div>
                       <div className="text-right">
                         <div className="flex items-center gap-1 text-chart-2">
                           <TrendingDown className="w-4 h-4" />
-                          <span className="font-semibold">-3.5 lbs</span>
+                          <span className="font-semibold">-3.5 kg</span>
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          5.5 lbs to go
+                          5.5 kg to go
                         </div>
                       </div>
                     </div>
@@ -237,7 +237,7 @@ function RouteComponent() {
                     <polyline
                       points={MOCK_WEIGHT_LOGS.map((log, i) => {
                         const x = (i / (MOCK_WEIGHT_LOGS.length - 1)) * 280 + 10
-                        const y = 140 - ((log.weight - 170) / 20) * 120
+                        const y = 140 - ((log.weight - 180) / 5) * 120
                         return `${x},${y}`
                       }).join(' ')}
                       fill="none"
@@ -249,7 +249,7 @@ function RouteComponent() {
                     {/* Data points */}
                     {MOCK_WEIGHT_LOGS.map((log, i) => {
                       const x = (i / (MOCK_WEIGHT_LOGS.length - 1)) * 280 + 10
-                      const y = 140 - ((log.weight - 170) / 20) * 120
+                      const y = 140 - ((log.weight - 180) / 5) * 120
                       return (
                         <circle
                           key={log.id}
@@ -265,11 +265,11 @@ function RouteComponent() {
 
                   {/* Y-axis labels */}
                   <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-muted-foreground py-2">
-                    <span>190</span>
                     <span>185</span>
+                    <span>184</span>
+                    <span>183</span>
+                    <span>181</span>
                     <span>180</span>
-                    <span>175</span>
-                    <span>170</span>
                   </div>
                 </div>
 
@@ -299,7 +299,7 @@ function RouteComponent() {
                           <Scale className="w-5 h-5 text-chart-2" />
                         </div>
                         <div>
-                          <div className="font-medium">{log.weight} lbs</div>
+                          <div className="font-medium">{log.weight} kg</div>
                           <div className="text-xs text-muted-foreground">
                             {new Date(log.createdAt).toLocaleDateString(
                               'en-US',
@@ -319,7 +319,7 @@ function RouteComponent() {
                           }`}
                         >
                           {diff > 0 ? '+' : ''}
-                          {diff.toFixed(1)} lbs
+                          {diff.toFixed(1)} kg
                         </div>
                       )}
                     </div>

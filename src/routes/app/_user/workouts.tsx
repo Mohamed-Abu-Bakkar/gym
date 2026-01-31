@@ -251,7 +251,9 @@ function RouteComponent() {
                           {exercise.weight > 0 && (
                             <>
                               <span>•</span>
-                              <span>{exercise.weight} lbs</span>
+                              <span>
+                                {(exercise.weight * 0.453592).toFixed(1)} kg
+                              </span>
                             </>
                           )}
                         </div>
