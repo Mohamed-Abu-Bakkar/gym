@@ -121,7 +121,7 @@ export function BottomNavigation() {
               </Button>
             </Link>
 
-            <Link to="/app/diet-plans/new">
+            <Link to="/app/diet-plans">
               <Button
                 variant="outline"
                 className="w-full h-16 text-lg justify-start gap-4"
@@ -131,9 +131,9 @@ export function BottomNavigation() {
                   <UtensilsCrossed className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold">Create Diet Plan</div>
+                  <div className="font-semibold">Diet Plans</div>
                   <div className="text-sm text-muted-foreground">
-                    Build a multi-day template
+                    View or create meal templates
                   </div>
                 </div>
               </Button>

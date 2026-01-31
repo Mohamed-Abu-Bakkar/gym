@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 import {
   CalendarDays,
@@ -8,11 +8,16 @@ import {
   Droplets,
   UtensilsCrossed,
 } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+import { useAuth } from '@/components/auth/useAuth'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
+import { api } from '../../../../convex/_generated/api'
+import { useMutation as useConvexMutation } from 'convex/react'
 
 export const Route = createFileRoute('/app/_user/diet-plans/new')({
   component: RouteComponent,
@@ -52,6 +57,10 @@ const steps = [
 ]
 
 function RouteComponent() {
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const createDietPlan = useConvexMutation(api.dietPlans.createDietPlan)
+
   const [stepIndex, setStepIndex] = useState(0)
   const [planName, setPlanName] = useState('')
   const [planDescription, setPlanDescription] = useState('')
@@ -68,6 +77,7 @@ function RouteComponent() {
     snack: { title: '', description: '', calories: '' },
     'post-workout': { title: '', description: '', calories: '' },
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const progressValue = useMemo(
     () => ((stepIndex + 1) / steps.length) * 100,
@@ -80,6 +90,65 @@ function RouteComponent() {
         ? prev.filter((day) => day !== dayKey)
         : [...prev, dayKey],
     )
+  }
+
+  const handleSubmit = async () => {
+    if (!user) {
+      toast.error('You must be logged in to create a diet plan')
+      return
+    }
+
+    if (!planName.trim()) {
+      toast.error('Plan name is required')
+      return
+    }
+
+    if (selectedDays.length === 0) {
+      toast.error('Please select at least one active day')
+      return
+    }
+
+    // Convert meals to array format for backend
+    const mealTemplate = Object.entries(meals)
+      .filter(([_, meal]) => meal.title.trim() !== '')
+      .map(([mealType, meal]) => ({
+        mealType: mealType === 'post-workout' ? 'postWorkout' : mealType,
+        title: meal.title,
+        description: meal.description,
+        calories: parseFloat(meal.calories) || 0,
+      }))
+
+    if (mealTemplate.length === 0) {
+      toast.error('Please add at least one meal')
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const dietPlanId = await createDietPlan({
+        name: planName,
+        description: planDescription,
+        goal: goal || undefined,
+        durationWeeks: parseInt(durationWeeks) || undefined,
+        activeDays: selectedDays as any,
+        dailyCalorieTarget: calorieTarget
+          ? parseFloat(calorieTarget)
+          : undefined,
+        hydrationTarget: hydrationTarget || undefined,
+        coachNote: coachNote || undefined,
+        mealTemplate: mealTemplate as any,
+        createdBy: user._id,
+      })
+
+      toast.success('Diet plan created successfully!')
+      navigate({ to: '/app' })
+    } catch (error) {
+      console.error('Failed to create diet plan:', error)
+      toast.error('Failed to create diet plan. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const isFirstStep = stepIndex === 0
@@ -414,18 +483,27 @@ function RouteComponent() {
             variant="outline"
             className="flex-1"
             onClick={() => setStepIndex((prev) => Math.max(prev - 1, 0))}
-            disabled={isFirstStep}
+            disabled={isFirstStep || isSubmitting}
           >
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
           <Button
             className="flex-1"
-            onClick={() =>
-              setStepIndex((prev) => Math.min(prev + 1, steps.length - 1))
-            }
+            onClick={() => {
+              if (isLastStep) {
+                handleSubmit()
+              } else {
+                setStepIndex((prev) => Math.min(prev + 1, steps.length - 1))
+              }
+            }}
+            disabled={isSubmitting}
           >
-            {isLastStep ? 'Save Plan' : 'Continue'}
+            {isLastStep
+              ? isSubmitting
+                ? 'Saving...'
+                : 'Save Plan'
+              : 'Continue'}
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

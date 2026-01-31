@@ -250,17 +250,33 @@ const trainingPlans = defineTable({
 export const dietPlans = defineTable({
   name: v.string(),
   description: v.string(),
+  goal: v.optional(v.string()),
+  durationWeeks: v.optional(v.number()),
 
-  meals: v.object({
-    day: DayOfWeekValidator,
-    plan: v.object({
+  // Days that are active in this plan
+  activeDays: v.array(DayOfWeekValidator),
+
+  // Daily targets
+  dailyCalorieTarget: v.optional(v.number()),
+  hydrationTarget: v.optional(v.string()),
+
+  // Coach guidance
+  coachNote: v.optional(v.string()),
+
+  // Meal template for each day (repeatable structure)
+  mealTemplate: v.array(
+    v.object({
       mealType: MealTypeValidator,
       title: v.string(),
       description: v.string(),
       calories: v.number(),
-    }),
-  })
-})
+    })
+  ),
+
+  createdBy: v.id('users'),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+}).index('by_creator', ['createdBy'])
 
 /* ======================================================
    SCHEMA EXPORT
@@ -274,4 +290,5 @@ export default defineSchema({
   dietLogs,
   weightLogs,
   trainingPlans,
+  dietPlans,
 })
