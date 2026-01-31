@@ -121,7 +121,7 @@ export function BottomNavigation() {
               </Button>
             </Link>
 
-            <Link to="/app/diet-plans">
+            <Link to="/app/management/diet-plans">
               <Button
                 variant="outline"
                 className="w-full h-16 text-lg justify-start gap-4"
