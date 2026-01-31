@@ -9,11 +9,13 @@ Training program management is **planned for future integration** with the Conve
 All training program pages have "Coming Soon" placeholders:
 
 ### Management Section (Trainer/Admin)
+
 - **`/app/management/programs`** - Program list page
-- **`/app/management/programs/new`** - Program creation page  
+- **`/app/management/programs/new`** - Program creation page
 - **`/app/management/programs/$programId`** - Program details page
 
 ### Client Section
+
 - **`/app/_user/workouts`** - View assigned training programs
 
 ## ✅ Backend Ready
@@ -21,6 +23,7 @@ All training program pages have "Coming Soon" placeholders:
 The Convex backend **already has full support** for training programs:
 
 ### Available Functions (`convex/trainingPlans.ts`):
+
 - ✅ `createTrainingPlan` - Create new training program
 - ✅ `getTrainingPlansByCreator` - Get programs by creator
 - ✅ `getAllTrainingPlans` - Get all programs
@@ -32,6 +35,7 @@ The Convex backend **already has full support** for training programs:
 - ✅ `getUsersByTrainingPlan` - Get users with specific program
 
 ### Data Structure:
+
 ```typescript
 {
   name: string,
@@ -64,6 +68,7 @@ The Convex backend **already has full support** for training programs:
 ## 📊 Sample Data Available
 
 The seed script (`convex/seed.ts`) creates:
+
 - 2 training plans (Strength Training & Cardio/Endurance)
 - Complete exercise lists with sets/reps/weights
 - Assigned to sample clients
@@ -71,6 +76,7 @@ The seed script (`convex/seed.ts`) creates:
 ## 🎯 When You're Ready to Implement
 
 ### 1. Management Section
+
 Connect the existing pages to Convex:
 
 ```typescript
@@ -82,6 +88,7 @@ const trainingPlans = useQuery(api.trainingPlans.getAllTrainingPlans)
 ```
 
 ### 2. Client Section
+
 Show assigned program:
 
 ```typescript
@@ -89,12 +96,14 @@ Show assigned program:
 const user = useAuth().user
 const assignedPlan = useQuery(
   api.trainingPlans.getTrainingPlanById,
-  user?.trainingPlanId ? { trainingPlanId: user.trainingPlanId } : 'skip'
+  user?.trainingPlanId ? { trainingPlanId: user.trainingPlanId } : 'skip',
 )
 ```
 
 ### 3. Program Builder
+
 The UI components already exist in:
+
 - `/src/routes/app/management/programs/_components/`
 
 Just connect them to the backend mutations.
@@ -112,6 +121,7 @@ When ready to implement:
 ## 💡 Why "Coming Soon"?
 
 The backend is complete, but the **UI integration** is deferred to:
+
 - Focus on core features first (workout logging, diet tracking)
 - Ensure stable authentication flow
 - Allow for iterative UI/UX improvements

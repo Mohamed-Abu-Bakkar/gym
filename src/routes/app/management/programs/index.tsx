@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { ClipboardList, Plus, ArrowLeft } from 'lucide-react'
+import { ClipboardList, Plus, ArrowLeft, Calendar, Users } from 'lucide-react'
+import { useQuery } from 'convex/react'
 
 import { useAuth } from '@/components/auth/useAuth'
 import { Button } from '@/components/ui/button'
@@ -11,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { api } from '../../../../../convex/_generated/api'
 
 const privilegedRoles = new Set(['trainer', 'admin'])
 
@@ -21,6 +23,9 @@ export const Route = createFileRoute('/app/management/programs/')({
 function ProgramsRoute() {
   const { user, isLoading } = useAuth()
   const navigate = useNavigate()
+
+  // Fetch training plans
+  const trainingPlans = useQuery(api.trainingPlans.getAllTrainingPlans)
 
   /* -------------------------------------------------------------------------- */
   /*                                 Auth Guard                                 */
@@ -93,7 +98,7 @@ function ProgramsRoute() {
           <div>
             <h1 className="text-2xl font-semibold">Programs</h1>
             <p className="text-muted-foreground">
-              Keep plans tidy and ready to assign.
+              {trainingPlans?.length || 0} training programs
             </p>
           </div>
           <div className="flex gap-2">
@@ -112,24 +117,77 @@ function ProgramsRoute() {
       <Card>
         <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <CardTitle>Program list</CardTitle>
+            <CardTitle>Training Programs</CardTitle>
             <CardDescription>Create, edit, and assign plans.</CardDescription>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <div className="text-center py-12 space-y-4">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-              <ClipboardList className="h-8 w-8 text-primary" />
+          {!trainingPlans && (
+            <div className="text-center py-8 text-muted-foreground">
+              Loading programs...
             </div>
-            <div className="space-y-2">
-              <h3 className="font-semibold">Training Programs Coming Soon</h3>
-              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                Workout program management will be integrated with Convex backend.
-                Create, edit, and assign custom training programs to your clients.
-              </p>
+          )}
+
+          {trainingPlans && trainingPlans.length === 0 && (
+            <div className="text-center py-12 space-y-4">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                <ClipboardList className="h-8 w-8 text-primary" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-semibold">No programs yet</h3>
+                <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                  Create your first training program to get started.
+                </p>
+              </div>
+              <Button
+                onClick={() => navigate({ to: '/app/management/programs/new' })}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Program
+              </Button>
             </div>
-          </div>
+          )}
+
+          {trainingPlans && trainingPlans.length > 0 && (
+            <div className="space-y-3">
+              {trainingPlans.map((program) => (
+                <Link
+                  key={program._id}
+                  to="/app/management/programs/$programId"
+                  params={{ programId: program._id }}
+                  className="block"
+                >
+                  <Card className="hover:border-primary transition-colors cursor-pointer">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">
+                            {program.name}
+                          </CardTitle>
+                          <CardDescription className="mt-1">
+                            {program.description}
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="h-4 w-4" />
+                          {program.durationWeeks} weeks
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <ClipboardList className="h-4 w-4" />
+                          {program.days.length} workout days
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

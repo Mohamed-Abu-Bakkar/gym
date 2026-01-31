@@ -1,23 +1,18 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
 import { Dumbbell } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 export const Route = createFileRoute('/app/_user/workout-session')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    // Redirect back to workouts since we don't have sessions implemented yet
-    const timer = setTimeout(() => {
-      navigate({ to: '/app/workouts' })
-    }, 2000)
-    return () => clearTimeout(timer)
-  }, [navigate])
-
   return (
     <div className="p-4 min-h-screen flex items-center justify-center">
       <Card>
@@ -33,9 +28,9 @@ function RouteComponent() {
               <Dumbbell className="h-8 w-8 text-primary" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold">Session tracking coming soon</h3>
+              <h3 className="font-semibold">Workout Sessions Coming Soon</h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                Redirecting you back to workouts...
+                Your training programs will be integrated with the backend.
               </p>
             </div>
           </div>
